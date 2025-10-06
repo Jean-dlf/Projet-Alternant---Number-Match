@@ -1,0 +1,60 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+#include "types.h"
+#include "initialisation.h"
+#include "plateau.h"
+#include "jeu.h"
+
+int main(){
+    
+    int n = 6;
+    int m = 6;
+    plateau *p;
+    cases *c1, *c2, *c3, *c4, *c5, *c6, *c7, *c8, *c9;
+    l_cases l_c;
+
+    srand(time(NULL));
+
+    c1 = initialisation_cases(0, 0, 5);
+    c2 = initialisation_cases(0, 1, 0);
+    c3 = initialisation_cases(0, 2, 0);
+    c4 = initialisation_cases(0, 3, 0);
+    c5 = initialisation_cases(0, 4, 0);
+    c6 = initialisation_cases(0, 5, 0);
+    c7 = initialisation_cases(1, 0, 0);
+    c8 = initialisation_cases(1, 1, 0);
+    c9 = initialisation_cases(1, 2, 5);
+
+    p = initialisation_plateau(n, m);
+    initialisation_aleatoire(p);
+
+    p->tab[c1->x][c1->y].valeur = c1->valeur;
+    p->tab[c2->x][c2->y].valeur = c2->valeur;
+    p->tab[c3->x][c3->y].valeur = c3->valeur;
+    p->tab[c4->x][c4->y].valeur = c4->valeur;
+    p->tab[c5->x][c5->y].valeur = c5->valeur;
+    p->tab[c6->x][c6->y].valeur = c6->valeur;
+    p->tab[c7->x][c7->y].valeur = c7->valeur;
+    p->tab[c8->x][c8->y].valeur = c8->valeur;
+    p->tab[c9->x][c9->y].valeur = c9->valeur;
+
+    afficher_plateau(p);
+    
+    l_c = liste_paire(p);
+
+    printf("Case 1 : (%d, %d) = %d\n", l_c.c[0].x, l_c.c[0].y, l_c.c[0].valeur);
+    printf("Case 2 : (%d, %d) = %d\n", l_c.c[1].x, l_c.c[1].y, l_c.c[1].valeur);
+
+    mise_a_zero(p, l_c);
+
+    afficher_plateau(p);
+
+    ligne_vide(p);
+
+    /*afficher_case(c3);
+
+    voisins(c1, c2, p);*/
+
+    exit(EXIT_SUCCESS);
+}
