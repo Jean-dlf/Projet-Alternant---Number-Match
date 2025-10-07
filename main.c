@@ -10,9 +10,11 @@ int main(){
     
     int n = 6;
     int m = 6;
+    int taille;
     plateau *p;
     cases *c1, *c2, *c3, *c4, *c5, *c6, *c7, *c8, *c9;
     l_cases l_c;
+    int *tab_vide;
 
     srand(time(NULL));
 
@@ -50,7 +52,12 @@ int main(){
 
     afficher_plateau(p);
 
-    ligne_vide(p);
+    tab_vide = ligne_vide(p, &taille);
+    aff_tab(tab_vide, taille);
+
+    suppression_ligne_vide(p, tab_vide, taille);
+
+    afficher_plateau(p);
 
     /*afficher_case(c3);
 

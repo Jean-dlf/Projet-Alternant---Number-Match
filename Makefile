@@ -14,7 +14,7 @@ initialisation.o: initialisation.c initialisation.h
 
 plateau.o: plateau.c plateau.h
 	$(CC) $(OPTION) plateau.c -c
-	
+
 jeu.o: jeu.c jeu.h
 	$(CC) $(OPTION) jeu.c -c
 

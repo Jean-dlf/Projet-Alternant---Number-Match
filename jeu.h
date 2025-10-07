@@ -26,6 +26,10 @@ int match(l_cases *l_c, plateau *p);
 
 plateau *mise_a_zero(plateau *p, l_cases l_c);
 
-int ligne_vide(plateau *p);
+int *ligne_vide(plateau *p, int *taille);
+
+void aff_tab(int *tab, int taille);
+
+plateau *suppression_ligne_vide(plateau *p, int *tab_vide, int taille);
 
 #endif

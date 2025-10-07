@@ -35,7 +35,6 @@ int verif_somme_10(cases *c1, cases *c2){
 
 int verif_cases_vides(plateau *p, int x, int y){
     if(p->tab[x][y].valeur == 0){
-        printf("Case vide\n");
         return 1;
     }
 
@@ -279,36 +278,60 @@ plateau *mise_a_zero(plateau *p, l_cases l_c){
     return p;
 }
 
-plateau *suppression_ligne(plateau *p){
-    int i, j, x;
+/* Faudrait renvoyer le numéro de la ligne vide au lieu de 1, (pour la boucle de jeu j'peux la faire boucler pour obtenir à chaque itération le numéro de la ligne jusqu'à ce que le renvoie de la fonction soit != 0 */
+int *ligne_vide(plateau *p, int *taille){
+    int i, j, est_vide = 1, x = 0;
+    int *tab_vide;
+
+    if((tab_vide = (int *) malloc ( p->n * sizeof(int))) == NULL){
+        fprintf(stderr, "Erreur lors de l'allocation de la mémoire du tableau de ligne vide\n");
+        *taille = 0;
+        return NULL;
+    }
+    
+    for(i = 0; i < p->n; i++){
+        est_vide = 1;
+        for(j = 0; j < p->m; j++){
+            /* printf("tab[%d][%d] = %d\n", i, j, p->tab[i][j].valeur); */
+            if(!verif_cases_vides(p, i, j)){
+                /* printf("ON DONNE PAS LA LIGNE tab[%d][%d] = %d\n", i, j, p->tab[i][j].valeur); */
+                est_vide = 0;
+            }
+        }
+        if(est_vide){
+            printf("on est en (%d ; %d)\n", i, j);
+            printf("i = %d\n", i);
+            printf("x avant = %d\n", x);
+            tab_vide[x] = i;
+            x++;
+            printf("x après = %d\n", x);
+        }
+    }
+    *taille = x;
+    printf("taille = %d\n", *taille);
+    return tab_vide;
+}
+
+void aff_tab(int *tab, int taille){
+    int i;
+    
+    for(i = 0; i < taille; i++){
+        printf("tab[%d] = %d\n", i, tab[i]);
+    }
+}
+
+
+plateau *suppression_ligne_vide(plateau *p, int *tab_vide, int taille){
+    int i, j, k;
 
     for(i = 0; i < p->n; i++){
-        x = 0;
         for(j = 0; j < p->m; j++){
-            if(p->tab[i][j].valeur == 0){
-                if(x == p->m - 1){
-                    /* supprime la ligne */
-                } else {
-                    x++;
+            for(k = 0; k < taille; k++){
+                if((i == tab_vide[k]) && (i != p->n - 1)){
+                    p->tab[i][j] = p->tab[i + 1][j];
                 }
             }
         }
     }
     return p;
-}
-
-int ligne_vide(plateau *p){
-    int i, j, est_vide = 1;
-    
-    for(i = 0; i < p->n; i++){
-        for(j = 0; j < p->m; j++){
-            if(!verif_cases_vides(p, i, j)){
-                est_vide = 0;
-            }
-        }
-        if(est_vide){
-            return 1;
-        }
-    }
-    return 0;
 }
