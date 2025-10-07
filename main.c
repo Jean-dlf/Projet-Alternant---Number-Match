@@ -12,7 +12,7 @@ int main(){
     int m = 6;
     int taille;
     plateau *p;
-    cases *c1, *c2, *c3, *c4, *c5, *c6, *c7, *c8, *c9;
+    cases *c1, *c2, *c3, *c4, *c5, *c6, *c7, *c8, *c9, *c10;
     l_cases l_c;
     int *tab_vide;
 
@@ -27,6 +27,7 @@ int main(){
     c7 = initialisation_cases(1, 0, 0);
     c8 = initialisation_cases(1, 1, 0);
     c9 = initialisation_cases(1, 2, 5);
+    c10 = initialisation_cases(3, 0, 9);
 
     p = initialisation_plateau(n, m);
     initialisation_aleatoire(p);
@@ -40,13 +41,11 @@ int main(){
     p->tab[c7->x][c7->y].valeur = c7->valeur;
     p->tab[c8->x][c8->y].valeur = c8->valeur;
     p->tab[c9->x][c9->y].valeur = c9->valeur;
+    p->tab[c10->x][c10->y].valeur = c10->valeur;
 
     afficher_plateau(p);
     
     l_c = liste_paire(p);
-
-    printf("Case 1 : (%d, %d) = %d\n", l_c.c[0].x, l_c.c[0].y, l_c.c[0].valeur);
-    printf("Case 2 : (%d, %d) = %d\n", l_c.c[1].x, l_c.c[1].y, l_c.c[1].valeur);
 
     mise_a_zero(p, l_c);
 

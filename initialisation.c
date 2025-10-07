@@ -38,7 +38,6 @@ plateau *initialisation_plateau(int n, int m){
             p->tab[i][j].valeur = 0;
         }
     }
-    printf("L'initialisation est terminée\n");
     return p;
 }
 
@@ -55,7 +54,6 @@ cases *initialisation_cases(int x, int y, int valeur){
     c->y = y;
     c->valeur = valeur;
 
-    printf("L'initialisation de la case est terminée\n");
     return c;
 }
 

@@ -1,6 +1,8 @@
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "types.h"
+#include "plateau.h"
 
 void viderBuffer()
 {
@@ -244,10 +246,6 @@ l_cases liste_paire(plateau *p){
     l_c.c[0] = c1;
     l_c.c[1] = c2;
 
-    /*printf("Liste de cases créée\n");
-    printf("Case 1 : (%d, %d) --- Valeur : %d\n", l_c.c[0].x, l_c.c[0].y, l_c.c[0].valeur);
-    printf("Case 2 : (%d, %d) --- Valeur : %d\n", l_c.c[1].x, l_c.c[1].y, l_c.c[1].valeur);*/
-
     return l_c;
 }
 
@@ -269,10 +267,6 @@ plateau *mise_a_zero(plateau *p, l_cases l_c){
 
         p->tab[l_c.c[0].x][l_c.c[0].y].valeur = l_c.c[0].valeur;
         p->tab[l_c.c[1].x][l_c.c[1].y].valeur = l_c.c[1].valeur;
-
-        printf("Les cases ont été mises à zéro\n");
-        printf("Case 1 : (%d, %d) = %d\n", l_c.c[0].x, l_c.c[0].y, l_c.c[0].valeur);
-        printf("Case 2 : (%d, %d) = %d\n", l_c.c[1].x, l_c.c[1].y, l_c.c[1].valeur);
     }
 
     return p;
@@ -292,23 +286,16 @@ int *ligne_vide(plateau *p, int *taille){
     for(i = 0; i < p->n; i++){
         est_vide = 1;
         for(j = 0; j < p->m; j++){
-            /* printf("tab[%d][%d] = %d\n", i, j, p->tab[i][j].valeur); */
             if(!verif_cases_vides(p, i, j)){
-                /* printf("ON DONNE PAS LA LIGNE tab[%d][%d] = %d\n", i, j, p->tab[i][j].valeur); */
                 est_vide = 0;
             }
         }
         if(est_vide){
-            printf("on est en (%d ; %d)\n", i, j);
-            printf("i = %d\n", i);
-            printf("x avant = %d\n", x);
             tab_vide[x] = i;
             x++;
-            printf("x après = %d\n", x);
         }
     }
     *taille = x;
-    printf("taille = %d\n", *taille);
     return tab_vide;
 }
 
@@ -320,18 +307,30 @@ void aff_tab(int *tab, int taille){
     }
 }
 
-
 plateau *suppression_ligne_vide(plateau *p, int *tab_vide, int taille){
     int i, j, k;
+    cases **new_tab;
 
     for(i = 0; i < p->n; i++){
         for(j = 0; j < p->m; j++){
             for(k = 0; k < taille; k++){
                 if((i == tab_vide[k]) && (i != p->n - 1)){
                     p->tab[i][j] = p->tab[i + 1][j];
-                }
+                    p->tab[i + 1][j].valeur = 0;
+                }  
             }
         }
+        tab_vide = ligne_vide(p, &taille);
     }
+
+    new_tab = realloc(p->tab, (p->n - taille) * sizeof(cases *));
+    if(new_tab == NULL){
+        fprintf(stderr, "Erreur lors de la réallocation de la mémoire des lignes du plateau de jeu\n");
+        return p;
+    }
+
+    p->tab = new_tab;
+    p->n = p->n - taille;
+    
     return p;
 }
