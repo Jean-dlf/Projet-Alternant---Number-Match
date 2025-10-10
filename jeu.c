@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include "types.h"
 #include "plateau.h"
+#include "jeu.h"
+
+/************ FONCTIONS UTILES AU BON FONCTIONNEMENT DU JEU ************/
 
 void viderBuffer()
 {
@@ -51,6 +54,24 @@ int dans_plateau(plateau *p, int x, int y){
     }
 
     return 1;
+}
+
+int voisin_fin_debut_ligne(cases *c1, cases *c2, plateau *p){
+    cases c_h, c_b;
+
+    c_h = cases_haute(c1, c2);
+
+    if(c_h.x == c1->x && c_h.y == c1->y && c_h.valeur == c1->valeur){
+        c_b = *c2;
+    } else {
+        c_b = *c1;
+    }
+
+    if(c_h.y == p->m - 1 && c_b.x == c_h.x + 1 && c_b.y == 0){
+        return 1;
+    }
+
+    return 0;
 }
 
 int voisins(cases *c1, cases *c2, plateau *p){
@@ -158,17 +179,15 @@ int voisin_plus(cases *c1, cases *c2, plateau *p){
         c_h = cases_haute(c1, c2);
 
         if(c_h.x == c1->x && c_h.y == c1->y && c_h.valeur == c1->valeur){
-            c_h = *c1;
             c_b = *c2;
         } else {
-            c_h = *c2;
             c_b = *c1;
         }
 
         for(i = c_h.x; i < p->n; i++){
             for(j = c_h.y + 1; j < p->m; j++){
 
-                if(p->tab[i][j].valeur == p->tab[c_b.x][c_b.y].valeur){
+                if(i == c_b.x && j == c_b.y){
                     printf("on est arrivé à la case 2\n");
                     return 1;
                 }
@@ -189,7 +208,7 @@ cases select_case(plateau *p){
     cases c;
 
     printf("Veuillez entrer le numéro de la ligne (de 0 à %d) : ", p->n - 1);
-    if((scanf("%d", &lig) != 1) || lig < 0 || lig > p->n){
+    if((scanf("%d", &lig) != 1) || lig < 0 || lig > p->n - 1){
         fprintf(stderr, "Erreur lors de la saisie de la ligne : %d\n", lig);
         viderBuffer();
         c.x = -1;
@@ -198,7 +217,7 @@ cases select_case(plateau *p){
     }
 
     printf("Veuillez entrer le numéro de la colonne (de 0 à %d) : ", p->m - 1);
-    if((scanf("%d", &col) != 1) || col < 0 || col > p->m){
+    if((scanf("%d", &col) != 1) || col < 0 || col > p->m - 1){
         fprintf(stderr, "Erreur lors de la saisie de la ligne : %d\n", col);
         viderBuffer();
         c.x = -1;
@@ -251,7 +270,7 @@ l_cases liste_paire(plateau *p){
 
 int match(l_cases *l_c, plateau *p){
 
-    if((cases_similaire(&l_c->c[0], &l_c->c[1]) || verif_somme_10(&l_c->c[0], &l_c->c[1])) && (voisins(&l_c->c[0], &l_c->c[1], p) || (voisin_plus(&l_c->c[0], &l_c->c[1], p)))){
+    if((cases_similaire(&l_c->c[0], &l_c->c[1]) || verif_somme_10(&l_c->c[0], &l_c->c[1])) && (voisins(&l_c->c[0], &l_c->c[1], p) || (voisin_plus(&l_c->c[0], &l_c->c[1], p)) || (voisin_fin_debut_ligne(&l_c->c[0], &l_c->c[1], p)) )){
         printf("Il y a match\n");
         return 1;
     }
@@ -261,18 +280,15 @@ int match(l_cases *l_c, plateau *p){
 }
 
 plateau *mise_a_zero(plateau *p, l_cases l_c){
-    if(match(&l_c, p)){
-        l_c.c[0].valeur = 0;
-        l_c.c[1].valeur = 0;
+    l_c.c[0].valeur = 0;
+    l_c.c[1].valeur = 0;
 
-        p->tab[l_c.c[0].x][l_c.c[0].y].valeur = l_c.c[0].valeur;
-        p->tab[l_c.c[1].x][l_c.c[1].y].valeur = l_c.c[1].valeur;
-    }
+    p->tab[l_c.c[0].x][l_c.c[0].y].valeur = l_c.c[0].valeur;
+    p->tab[l_c.c[1].x][l_c.c[1].y].valeur = l_c.c[1].valeur;
 
     return p;
 }
 
-/* Faudrait renvoyer le numéro de la ligne vide au lieu de 1, (pour la boucle de jeu j'peux la faire boucler pour obtenir à chaque itération le numéro de la ligne jusqu'à ce que le renvoie de la fonction soit != 0 */
 int *ligne_vide(plateau *p, int *taille){
     int i, j, est_vide = 1, x = 0;
     int *tab_vide;
@@ -307,30 +323,194 @@ void aff_tab(int *tab, int taille){
     }
 }
 
+void afficher_l_cases(l_cases l_c){
+    int i;
+
+    printf("L_cases : \n");
+    for(i = 0; i < l_c.n; i++){
+        printf("Case %d : (%d, %d) -> %d\n", i, l_c.c[i].x, l_c.c[i].y, l_c.c[i].valeur);
+    }
+}
+
+
 plateau *suppression_ligne_vide(plateau *p, int *tab_vide, int taille){
-    int i, j, k;
+    int i, j, k, est_vide;
+    int new_i = 0;
     cases **new_tab;
 
-    for(i = 0; i < p->n; i++){
-        for(j = 0; j < p->m; j++){
-            for(k = 0; k < taille; k++){
-                if((i == tab_vide[k]) && (i != p->n - 1)){
-                    p->tab[i][j] = p->tab[i + 1][j];
-                    p->tab[i + 1][j].valeur = 0;
-                }  
-            }
-        }
-        tab_vide = ligne_vide(p, &taille);
-    }
-
-    new_tab = realloc(p->tab, (p->n - taille) * sizeof(cases *));
-    if(new_tab == NULL){
-        fprintf(stderr, "Erreur lors de la réallocation de la mémoire des lignes du plateau de jeu\n");
+    if((new_tab = (cases **) malloc((p->n - taille) * sizeof(cases *))) == NULL){
+        fprintf(stderr, "Erreur lors de l'allocation de la mémoire de new_tab\n");
         return p;
     }
 
+     for(i = 0; i < p->n; i++){
+        est_vide = 0;
+        for(j = 0; j < taille; j++){
+            if(i == tab_vide[j]){
+                est_vide = 1;
+            }
+        }
+
+        if(!est_vide){
+            new_tab[new_i] = p->tab[i];
+
+            for(k = 0; k < p->m; k++){
+                new_tab[new_i][k].x = new_i;
+            }
+
+            new_i++;
+
+        } else {
+            free(p->tab[i]);
+        }
+    }
+
+    free(p->tab);
+
     p->tab = new_tab;
-    p->n = p->n - taille;
+    p->n = new_i;
     
     return p;
 }
+
+
+/************ BONUS DE JEU ************/
+
+/***** BONUS AJOUT DE LIGNE  *****/
+
+int plateau_vide(plateau *p){
+    int i, j;
+
+    for(i = 0; i < p->n; i++){
+        for(j = 0; j < p->m; j++){
+            if(p->tab[i][j].valeur != 0){
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+cases *derniere_case(plateau *p){
+    int i, j;
+
+    for(i = p->n - 1; i >= 0; i--){
+        for(j = p->m - 1; j >= 0; j--){
+            if(p->tab[i][j].valeur != 0){
+                return &(p->tab[i][j]);
+            }
+        }
+    }
+    
+    return NULL;
+}
+
+plateau *utiliser_ajout_ligne(plateau *p){
+    char rep = 'A';
+    while(rep != 'N' && rep != 'O'){
+        printf("Voulez vous utiliser le bonus ajout de ligne ? (O ou N) : ");
+        if(scanf(" %c", &rep) != 1 || (rep != 'O' && rep != 'N')){
+            fprintf(stderr, "Erreur il vous faut rentrer soit O ou N pour commencer\n");
+        }
+        viderBuffer();
+    }
+
+    if(rep == 'O'){
+        p = bonus_ajout_ligne(p);
+    }
+    return p;
+}
+
+plateau *bonus_ajout_ligne(plateau *p){
+    l_cases l_c;
+    cases *c;
+    int i, j, k, max, nb_lig_all;
+
+    max = p->n * p->m;
+
+    if((l_c.c = (cases*) malloc ( max * sizeof(cases))) == NULL){
+        printf("Erreur lors de l'allocation de mémoire de la liste de cases\n");
+        return p;
+    }
+
+    k = 0;
+
+    for(i = 0; i < p->n; i++){
+        for(j = 0; j < p->m; j++){
+            if(p->tab[i][j].valeur != 0){
+                l_c.c[k] = p->tab[i][j];
+                k++;
+            }
+        }
+    }
+
+    l_c.n = k;
+
+    c = derniere_case(p);
+
+    if(c->x == p->n - 1 && c->y == p->m - 1){
+        printf("Ajout de ligne\n");
+        nb_lig_all = l_c.n / p->m;
+        if(l_c.n % p->m != 0){
+            nb_lig_all += 1;
+        }
+        if(!ajout_nb_ligne_plateau(p, nb_lig_all)){
+            fprintf(stderr, "Erreur : impossible d'ajouter des lignes\n");
+            free(l_c.c);
+            return p;
+        }
+    }
+
+    k = 0;
+    i = c->x;
+    j = c->y;
+
+    while(k <= l_c.n){
+        if(k == 0 || (j == p->m && i != p->n - 1)){
+            j = 0;
+            i++;
+        }
+        p->tab[i][j].valeur = l_c.c[k].valeur;
+        k++;
+        j++;
+    }
+
+
+    free(l_c.c);
+
+    return p;
+}
+
+int ajout_nb_ligne_plateau(plateau *p, int nb_ligne){
+    int i, j;
+    int new_nb_ligne = p->n + nb_ligne;    
+    cases **new_tab;
+
+    new_tab = (cases**) realloc(p->tab, new_nb_ligne * sizeof(cases*));
+    if (new_tab == NULL) {
+        fprintf(stderr, "Erreur lors de la réallocation de la mémoire du tableau\n");
+        return 0;
+    }
+
+    p->tab = new_tab;
+
+    for(i = p->n; i < new_nb_ligne; i++){
+        if((p->tab[i] = (cases*) malloc ( p->m * sizeof(cases))) == NULL){
+            fprintf(stderr, "Erreur lors de l'allocation des nouvelles lignes\n");
+            for(j = p->n; j < i; j++){
+                free(p->tab[j]);
+            }
+            return 0;
+        }
+        for(j = 0; j < p->m; j++){
+            p->tab[i][j].x = i;
+            p->tab[i][j].y = j;
+            p->tab[i][j].valeur = 0;
+        }
+    }
+    p->n = new_nb_ligne;
+    return 1;
+}
+
+/***** BONUS INDICE *****/
+

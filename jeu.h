@@ -10,7 +10,7 @@ int verif_somme_10(cases *c1, cases *c2);
 
 int verif_cases_vides(plateau *p, int x, int y);
 
-int dans_plateau(plateau *p);
+int dans_plateau(plateau *p, int x, int y);
 
 int voisins(cases *c1, cases *c2, plateau *p);
 
@@ -30,6 +30,22 @@ int *ligne_vide(plateau *p, int *taille);
 
 void aff_tab(int *tab, int taille);
 
+void afficher_l_cases(l_cases l_c);
+
 plateau *suppression_ligne_vide(plateau *p, int *tab_vide, int taille);
+
+plateau *bonus_ajout_ligne(plateau *p);
+
+/***** BONUS *****/
+
+int plateau_vide(plateau *p);
+
+cases *derniere_case(plateau *p);
+
+plateau *utiliser_ajout_ligne(plateau *p);
+
+plateau *bonus_ajout_ligne(plateau *p);
+
+int ajout_nb_ligne_plateau(plateau *p, int nb_ligne);
 
 #endif
