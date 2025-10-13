@@ -48,4 +48,13 @@ plateau *bonus_ajout_ligne(plateau *p);
 
 int ajout_nb_ligne_plateau(plateau *p, int nb_ligne);
 
+
+tab_couples couples_possibles(plateau *p);
+
+void afficher_couples_possibles(tab_couples t_c);
+
+void liberer_tab_couples(tab_couples *t_c);
+
+plateau *utiliser_indice(plateau *p);
+
 #endif

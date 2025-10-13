@@ -22,7 +22,6 @@ void afficher_case(cases *c){
 
 int cases_similaire(cases *c1, cases *c2){
     if(c1->valeur == c2->valeur){
-        printf("Valeur similaire\n");
         return 1;
     }
 
@@ -31,7 +30,6 @@ int cases_similaire(cases *c1, cases *c2){
 
 int verif_somme_10(cases *c1, cases *c2){
     if(c1->valeur + c2->valeur == 10){
-        printf("Somme égale à 10\n");
         return 1;
     }
 
@@ -49,7 +47,6 @@ int verif_cases_vides(plateau *p, int x, int y){
 int dans_plateau(plateau *p, int x, int y){
 
     if(x < 0 || x >= p->n || y < 0 || y >= p->m){
-        printf("La case depasse les limites du plateau de jeu\n");
         return 0;
     }
 
@@ -93,7 +90,6 @@ int voisins(cases *c1, cases *c2, plateau *p){
     /* Voisins Directs */
     
     if((espace_x <= 1 && espace_y <= 1) && (espace_x != 0 && espace_y != 0)){
-        printf("Voisins Directs\n");
         return 1;
     }
 
@@ -128,13 +124,11 @@ int voisins(cases *c1, cases *c2, plateau *p){
         /* On parcourt */
         while(x != c2->x || y != c2->y){
             if(dans_plateau(p, x, y) == 0){
-                printf("Dépassement de limite\n");
                 return 0;
             }
 
             /* Pas voisins car pas de cases vides entre elles */
             if(verif_cases_vides(p, x, y) == 0){
-                printf("Pas vide donc c1 et c2 ne sont pas voisins\n");
                 return 0;
             }
 
@@ -143,12 +137,10 @@ int voisins(cases *c1, cases *c2, plateau *p){
         }
 
         /* Les cases sont voisines car il y a que des cases vides entre elles */
-        printf("Cases Voisines\n");
         return 1;
 
 
     } else {
-        printf("Cases pas Voisines\n");
         return 0;
     }
 }
@@ -188,13 +180,10 @@ int voisin_plus(cases *c1, cases *c2, plateau *p){
             for(j = c_h.y + 1; j < p->m; j++){
 
                 if(i == c_b.x && j == c_b.y){
-                    printf("on est arrivé à la case 2\n");
                     return 1;
                 }
 
                 if(p->tab[i][j].valeur != 0){
-                    printf("Il y a un chiffre != 0 entre c1 et c2\n");
-                    printf("on est en (%d ; %d)\n", i, j);
                     return 0;
                 }
             }
@@ -426,6 +415,7 @@ plateau *bonus_ajout_ligne(plateau *p){
     cases *c;
     int i, j, k, max, nb_lig_all;
 
+    /* Nombre max de cases dans le plateau */
     max = p->n * p->m;
 
     if((l_c.c = (cases*) malloc ( max * sizeof(cases))) == NULL){
@@ -435,6 +425,7 @@ plateau *bonus_ajout_ligne(plateau *p){
 
     k = 0;
 
+    /* Copie des valeurs non nulles dans l_c */
     for(i = 0; i < p->n; i++){
         for(j = 0; j < p->m; j++){
             if(p->tab[i][j].valeur != 0){
@@ -450,10 +441,15 @@ plateau *bonus_ajout_ligne(plateau *p){
 
     if(c->x == p->n - 1 && c->y == p->m - 1){
         printf("Ajout de ligne\n");
+
+        /* Calcul du nombre de lignes nécessaire pour contenir toutes les cases non nulles */
         nb_lig_all = l_c.n / p->m;
         if(l_c.n % p->m != 0){
+            /* Si reste on rajoute une ligne en plus */
             nb_lig_all += 1;
         }
+
+        /* Ajout des lignes supplémentaires */
         if(!ajout_nb_ligne_plateau(p, nb_lig_all)){
             fprintf(stderr, "Erreur : impossible d'ajouter des lignes\n");
             free(l_c.c);
@@ -462,31 +458,50 @@ plateau *bonus_ajout_ligne(plateau *p){
     }
 
     k = 0;
+    /* Position de départ de la recopie */
     i = c->x;
-    j = c->y;
+    j = c->y + 1;
 
-    while(k <= l_c.n){
-        if(k == 0 || (j == p->m && i != p->n - 1)){
-            j = 0;
-            i++;
-        }
+    /* Si début = dernière colonne on commence à la ligne suivante et à la première colonne */
+    if(j == p->m){
+        j = 0;
+        i++;
+    }
+
+    /* Recopie des valeurs */
+    while(k < l_c.n && i < p->n){
         p->tab[i][j].valeur = l_c.c[k].valeur;
         k++;
         j++;
+        if(j == p->m){
+            j = 0;
+            i++;
+        }
     }
 
+    /* On remplie le reste par 0 */
+    while(i < p->n){
+        while(j < p->m){
+            p->tab[i][j].valeur = 0;
+            j++;
+        }
+        j = 0;
+        i++;
+    }
 
     free(l_c.c);
 
     return p;
 }
 
+
 int ajout_nb_ligne_plateau(plateau *p, int nb_ligne){
     int i, j;
-    int new_nb_ligne = p->n + nb_ligne;    
+    int ancien_n = p->n;
+    int new_n = ancien_n + nb_ligne;
     cases **new_tab;
 
-    new_tab = (cases**) realloc(p->tab, new_nb_ligne * sizeof(cases*));
+    new_tab = (cases**) realloc(p->tab, new_n * sizeof(cases*));
     if (new_tab == NULL) {
         fprintf(stderr, "Erreur lors de la réallocation de la mémoire du tableau\n");
         return 0;
@@ -494,7 +509,7 @@ int ajout_nb_ligne_plateau(plateau *p, int nb_ligne){
 
     p->tab = new_tab;
 
-    for(i = p->n; i < new_nb_ligne; i++){
+    for(i = ancien_n; i < new_n; i++){
         if((p->tab[i] = (cases*) malloc ( p->m * sizeof(cases))) == NULL){
             fprintf(stderr, "Erreur lors de l'allocation des nouvelles lignes\n");
             for(j = p->n; j < i; j++){
@@ -508,9 +523,99 @@ int ajout_nb_ligne_plateau(plateau *p, int nb_ligne){
             p->tab[i][j].valeur = 0;
         }
     }
-    p->n = new_nb_ligne;
+    p->n = new_n;
     return 1;
 }
 
 /***** BONUS INDICE *****/
 
+
+tab_couples couples_possibles(plateau *p){
+    tab_couples t_c;
+    cases *c1, *c2;
+    l_cases lc;
+    int i, j, k, l;
+    int taille_max = p->n * p->m * p->n * p->m;
+    t_c.n = 0;
+
+    t_c.lc = malloc(taille_max * sizeof(l_cases));
+    if(t_c.lc == NULL){
+        fprintf(stderr, "Erreur d'allocation mémoire pour tab_couples\n");
+        t_c.n = 0;
+        return t_c;
+    }
+
+    for(i = 0; i < p->n; i++){
+        for(j = 0; j < p->m; j++){
+
+            c1 = &p->tab[i][j];
+            if(c1->valeur != 0){
+
+                for(k = 0; k < p->n; k++){
+                    for(l = 0; l < p->m; l++){
+                        if(k > i || (k == i && l > j)){
+
+                            c2 = &p->tab[k][l];
+                            if(c2->valeur != 0){
+                            
+                                if((cases_similaire(c1, c2) || verif_somme_10(c1, c2)) && (voisins(c1, c2, p) || voisin_plus(c1, c2, p) || voisin_fin_debut_ligne(c1, c2, p))){
+                                    lc.n = 2;
+                                    lc.c = malloc(2 * sizeof(cases));
+                                    if(lc.c != NULL){
+
+                                        lc.c[0] = *c1;
+                                        lc.c[1] = *c2;
+
+                                        t_c.lc[t_c.n] = lc;
+                                        t_c.n++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return t_c;
+}
+
+void afficher_couples_possibles(tab_couples t_c){
+    int i;
+
+    printf("Couples possibles : %d\n", t_c.n);
+    for(i = 0; i < t_c.n; i++){
+        printf("Couple %d :\n", i + 1);
+        afficher_case(&t_c.lc[i].c[0]);
+        afficher_case(&t_c.lc[i].c[1]);
+        printf("------------\n");
+    }
+}
+
+void liberer_tab_couples(tab_couples *t_c){
+    int i;
+
+    for(i = 0; i < t_c->n; i++){
+        free(t_c->lc[i].c);
+    }
+    free(t_c->lc);
+    t_c->n = 0;
+    t_c->lc = NULL;
+}
+
+plateau *utiliser_indice(plateau *p){
+    char rep = 'A';
+    while(rep != 'N' && rep != 'O'){
+        printf("Voulez vous utiliser le bonus indice ? (O ou N) : ");
+        if(scanf(" %c", &rep) != 1 || (rep != 'O' && rep != 'N')){
+            fprintf(stderr, "Erreur il vous faut rentrer soit O ou N pour commencer\n");
+        }
+        viderBuffer();
+    }
+
+    if(rep == 'O'){
+        p = bonus_ajout_ligne(p);
+    }
+    return p;
+}

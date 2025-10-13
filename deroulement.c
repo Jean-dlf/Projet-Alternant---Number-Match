@@ -10,6 +10,7 @@ void deroulement(plateau *p, int n, int m){
     int taille;
     l_cases l_c;
     plateau *new_p;
+    tab_couples t_c;
 
 
     /*cases *c1, *c2, *c3, *c4, *c5, *c6, *c7, *c8, *c9, *c10, *c11, *c12;
@@ -65,6 +66,9 @@ void deroulement(plateau *p, int n, int m){
             }
             afficher_plateau(p);
         }   
+        t_c = couples_possibles(p);
+        afficher_couples_possibles(t_c);
+        liberer_tab_couples(&t_c);
     }
 }
 
