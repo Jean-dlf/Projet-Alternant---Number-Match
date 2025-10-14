@@ -455,7 +455,7 @@ plateau *utiliser_ajout_ligne(plateau *p){
 
     /* On boucle si la valeur rentrée n'est pas bonne */
     while(rep != 'N' && rep != 'O'){
-        printf("Voulez vous utiliser le bonus ajout de ligne ? (O ou N) : ");
+        printf("Voulez vous utiliser le BONUS AJOUT DE LIGNE ? (O ou N) : ");
         if(scanf(" %c", &rep) != 1 || (rep != 'O' && rep != 'N')){
             fprintf(stderr, "Erreur il vous faut rentrer soit 'O' ou 'N' pour commencer\n");
         }
@@ -671,10 +671,30 @@ void liberer_tab_couples(tab_couples *t_c){
     t_c->lc = NULL;
 }
 
-plateau *utiliser_indice(plateau *p){
+l_cases couple_aleatoire(tab_couples *t_c){
+    int random;
+    
+    random = rand() % ((t_c->n - 1) - 1 + 1) + 1;
+
+    return t_c->lc[random];
+}
+
+void bonus_indice(plateau *p){
+    tab_couples t_c;
+    l_cases l_c;
+
+    t_c = couples_possibles(p);
+    l_c = couple_aleatoire(&t_c);
+
+    printf("Voici une solution possible parmi tous les couples possibles \n");
+    afficher_l_cases(l_c);
+    
+}
+
+int utiliser_indice(plateau *p){
     char rep = 'A';
     while(rep != 'N' && rep != 'O'){
-        printf("Voulez vous utiliser le bonus indice ? (O ou N) : ");
+        printf("Voulez vous utiliser le BONUS INDICE ? (O ou N) : ");
         if(scanf(" %c", &rep) != 1 || (rep != 'O' && rep != 'N')){
             fprintf(stderr, "Erreur il vous faut rentrer soit O ou N pour commencer\n");
         }
@@ -682,7 +702,8 @@ plateau *utiliser_indice(plateau *p){
     }
 
     if(rep == 'O'){
-        p = bonus_ajout_ligne(p);
+        bonus_indice(p);
+        return 1;
     }
-    return p;
+    return 0;
 }

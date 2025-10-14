@@ -55,6 +55,10 @@ void afficher_couples_possibles(tab_couples t_c);
 
 void liberer_tab_couples(tab_couples *t_c);
 
-plateau *utiliser_indice(plateau *p);
+l_cases couple_aleatoire(tab_couples *t_c);
+
+void bonus_indice(plateau *p);
+
+int utiliser_indice(plateau *p);
 
 #endif

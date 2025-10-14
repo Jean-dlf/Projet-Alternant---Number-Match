@@ -65,9 +65,10 @@ void deroulement(plateau *p, int n, int m){
                 p = new_p;
             }
             afficher_plateau(p);
-        }   
-        t_c = couples_possibles(p);
-        afficher_couples_possibles(t_c);
+
+            utiliser_indice(p);
+        }
+                
         liberer_tab_couples(&t_c);
     }
 }
