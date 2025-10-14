@@ -5,8 +5,6 @@
 #include "plateau.h"
 #include "jeu.h"
 
-/************ FONCTIONS UTILES AU BON FONCTIONNEMENT DU JEU ************/
-
 void viderBuffer()
 {
     int c = 0;
@@ -16,10 +14,14 @@ void viderBuffer()
     }
 }
 
+/************ FONCTIONS UTILES AU BON FONCTIONNEMENT DU JEU ************/
+
+/* Affiche les coordonnées et la valeur d'une case */
 void afficher_case(cases *c){
     printf("Cordonnée x : %d   ---   Coordonnée y : %d   ---   Valeur : %d\n", c->x, c->y, c->valeur);
 }
 
+/* Vérifie si 2 cases ont la même valeur */
 int cases_similaire(cases *c1, cases *c2){
     if(c1->valeur == c2->valeur){
         return 1;
@@ -28,6 +30,7 @@ int cases_similaire(cases *c1, cases *c2){
     return 0;
 }
 
+/* Vérifie si la somme de 2 cases est égale à 10 */
 int verif_somme_10(cases *c1, cases *c2){
     if(c1->valeur + c2->valeur == 10){
         return 1;
@@ -36,6 +39,7 @@ int verif_somme_10(cases *c1, cases *c2){
     return 0;
 }
 
+/* Permet de vérifier si une case à une valeur de 0 soit est vide */
 int verif_cases_vides(plateau *p, int x, int y){
     if(p->tab[x][y].valeur == 0){
         return 1;
@@ -44,6 +48,7 @@ int verif_cases_vides(plateau *p, int x, int y){
     return 0;
 }
 
+/* Vérifie si des coordonées sont dans le plateau */
 int dans_plateau(plateau *p, int x, int y){
 
     if(x < 0 || x >= p->n || y < 0 || y >= p->m){
@@ -53,17 +58,36 @@ int dans_plateau(plateau *p, int x, int y){
     return 1;
 }
 
+/* Permet de retourner la cases parmi qui est la + haute dans le plateau */
+cases cases_haute(cases *c1, cases *c2){
+
+    if(c1->x > c2->x){
+        return *c2;
+    } else if(c1->x < c2->x){
+        return *c1;
+    } else {
+        if(c1->y < c2->y){
+            return *c1;
+        } else {
+            return *c2;
+        }
+    }
+}
+
 int voisin_fin_debut_ligne(cases *c1, cases *c2, plateau *p){
     cases c_h, c_b;
 
+    /* Regarde quel cases est la + haute */
     c_h = cases_haute(c1, c2);
 
+    /* On note que l'autre est la case basse */
     if(c_h.x == c1->x && c_h.y == c1->y && c_h.valeur == c1->valeur){
         c_b = *c2;
     } else {
         c_b = *c1;
     }
 
+    /* On vérifie si la case haute est à la dernière colonne et si la case basse est à la 1ère colonne de la ligne d'après */
     if(c_h.y == p->m - 1 && c_b.x == c_h.x + 1 && c_b.y == 0){
         return 1;
     }
@@ -71,6 +95,7 @@ int voisin_fin_debut_ligne(cases *c1, cases *c2, plateau *p){
     return 0;
 }
 
+/* Fonction qui vérifie si 2 cases sont voisines */
 int voisins(cases *c1, cases *c2, plateau *p){
     int espace_x, espace_y, x, y, dec_x, dec_y;
 
@@ -87,17 +112,16 @@ int voisins(cases *c1, cases *c2, plateau *p){
         espace_y = c2->y - c1->y;
     }
 
-    /* Voisins Directs */
-    
+    /* Vérifie si ils sont voisins directs soit côte à côté sans être sur la même case */
     if((espace_x <= 1 && espace_y <= 1) && (espace_x != 0 && espace_y != 0)){
         return 1;
     }
 
-    /* On regarde si y'a des cases vides entre */
+    /** On regarde si y'a des cases vides entre **/
         /* D'abord on regarde si ils peuvent être voisins */
     if((c1->x == c2->x) || (c1->y == c2->y) || (espace_x == espace_y)){
         
-        /* On calcule la direction (Diagonale, Horizontale, Verticale)*/
+        /** On calcule la direction (Diagonale, Horizontale, Verticale) **/
 
             /* Calcul de x */
         if(c1->x > c2->x){
@@ -123,6 +147,7 @@ int voisins(cases *c1, cases *c2, plateau *p){
 
         /* On parcourt */
         while(x != c2->x || y != c2->y){
+            /* On regarde si les coordonnées sont toujours dans le plateau */
             if(dans_plateau(p, x, y) == 0){
                 return 0;
             }
@@ -132,6 +157,7 @@ int voisins(cases *c1, cases *c2, plateau *p){
                 return 0;
             }
 
+            /* On incrément avec la direction voulu */
             x += dec_x;
             y += dec_y;
         }
@@ -145,21 +171,7 @@ int voisins(cases *c1, cases *c2, plateau *p){
     }
 }
 
-cases cases_haute(cases *c1, cases *c2){
-
-    if(c1->x > c2->x){
-        return *c2;
-    } else if(c1->x < c2->x){
-        return *c1;
-    } else {
-        if(c1->y < c2->y){
-            return *c1;
-        } else {
-            return *c2;
-        }
-    }
-}
-
+/* Permet de vérifier si des cases sont voisines malgré un changement de ligne */
 int voisin_plus(cases *c1, cases *c2, plateau *p){
     int i, j;
     cases c_h, c_b;
@@ -176,6 +188,7 @@ int voisin_plus(cases *c1, cases *c2, plateau *p){
             c_b = *c1;
         }
 
+        /* On parcourt à partir de la case après la case haute */
         for(i = c_h.x; i < p->n; i++){
             for(j = c_h.y + 1; j < p->m; j++){
 
@@ -192,12 +205,14 @@ int voisin_plus(cases *c1, cases *c2, plateau *p){
     return 0;
 }
 
+/* Permet de rentrer les coordonnées des cases qu'on veut pour vérifier le match */
 cases select_case(plateau *p){
     int lig, col;
     cases c;
 
+    /* Pour entrer la ligne souhaitée */
     printf("Veuillez entrer le numéro de la ligne (de 0 à %d) : ", p->n - 1);
-    if((scanf("%d", &lig) != 1) || lig < 0 || lig > p->n - 1){
+    if((scanf("%d", &lig) != 1) || lig < 0 || lig > p->n - 1){ /* On vérifie que le numéro de la ligne est dans le plateau */
         fprintf(stderr, "Erreur lors de la saisie de la ligne : %d\n", lig);
         viderBuffer();
         c.x = -1;
@@ -205,8 +220,9 @@ cases select_case(plateau *p){
         return c;
     }
 
+    /* Pour entrer la colonne souhaitée */
     printf("Veuillez entrer le numéro de la colonne (de 0 à %d) : ", p->m - 1);
-    if((scanf("%d", &col) != 1) || col < 0 || col > p->m - 1){
+    if((scanf("%d", &col) != 1) || col < 0 || col > p->m - 1){ /* On vérifie que le numéro de la colonne est dans le plateau */
         fprintf(stderr, "Erreur lors de la saisie de la ligne : %d\n", col);
         viderBuffer();
         c.x = -1;
@@ -214,6 +230,7 @@ cases select_case(plateau *p){
         return c;
     }
 
+    /* Si tout est bon alors on dit que la case = la case du plateau avec les valeurs rentrées */
     c = p->tab[lig][col];
 
     printf("Case sélectionée : (%d, %d)\n", c.x, c.y);
@@ -222,11 +239,12 @@ cases select_case(plateau *p){
     return c;
 }
 
+/* Permet de mettre les 2 cases sélectionées manuellement dans une liste de cases l_cases  */
 l_cases liste_paire(plateau *p){
     l_cases l_c;
     cases c1, c2;
 
-    l_c.n = 2;
+    l_c.n = 2; /* Initialise directement la longueur à 2 */
     if((l_c.c = (cases*) malloc (2 * sizeof(cases))) == NULL){
         fprintf(stderr, "Erreur lors de l'allocation de la mémoire de la liste de case\n");
         l_c.n = 0;
@@ -234,15 +252,17 @@ l_cases liste_paire(plateau *p){
         return l_c;
     }
 
+    /* On fait une boucle pour que si il y a une erreur alors on redemande à l'utilisateur d'entrer une bonne valeur */
     do{
         printf("Première case\n");
-        c1 = select_case(p);
-    } while(c1.x == -1 || c1.y == -1);
+        c1 = select_case(p);        
+    } while(c1.x == -1 || c1.y == -1); /* les -1 c'était les coordonées renvoyées en cas d'échec lors de l'entrée des coordonnées */
 
     do{
         printf("Deuxième case\n");
         c2 = select_case(p);
 
+        /* Lorsque les 2 sont rentrées on vérifie si il n'a pas entré 2 fois la même case */
         if((c2.x == c1.x && c2.y == c1.y)){
             printf("Même case ! Choisissez en une différente\n");
             c2.x = -1;
@@ -251,15 +271,20 @@ l_cases liste_paire(plateau *p){
 
     } while(c2.x == -1 || c2.y == -1);
 
+    /* Si tout est bon alors dans le tableau l_c on met les cases dedans */
     l_c.c[0] = c1;
     l_c.c[1] = c2;
 
+    /* On retourne le tableau de cases */
     return l_c;
 }
 
+/* Fonction qui vérifie le match de 2 cases dans un l_cases */
 int match(l_cases *l_c, plateau *p){
 
+    /* Toutes les conditions pour le match */
     if((cases_similaire(&l_c->c[0], &l_c->c[1]) || verif_somme_10(&l_c->c[0], &l_c->c[1])) && (voisins(&l_c->c[0], &l_c->c[1], p) || (voisin_plus(&l_c->c[0], &l_c->c[1], p)) || (voisin_fin_debut_ligne(&l_c->c[0], &l_c->c[1], p)) )){
+        /* Si toutes les conditions sont remplies */
         printf("Il y a match\n");
         return 1;
     }
@@ -268,6 +293,7 @@ int match(l_cases *l_c, plateau *p){
     return 0;
 }
 
+/* Permet après un match de mettre les valeurs des 2 cases à 0 pour les vider */
 plateau *mise_a_zero(plateau *p, l_cases l_c){
     l_c.c[0].valeur = 0;
     l_c.c[1].valeur = 0;
@@ -278,16 +304,19 @@ plateau *mise_a_zero(plateau *p, l_cases l_c){
     return p;
 }
 
+/* Permet de renvoyer un tableau d'entier indiquant les lignes vides soit une ligne remplie de 0 */
 int *ligne_vide(plateau *p, int *taille){
-    int i, j, est_vide = 1, x = 0;
+    int i, j, est_vide, x = 0;
     int *tab_vide;
 
+    /* On alloue la longueur du tableau avec la taille max possible soit le nombre de ligne du plateau */
     if((tab_vide = (int *) malloc ( p->n * sizeof(int))) == NULL){
         fprintf(stderr, "Erreur lors de l'allocation de la mémoire du tableau de ligne vide\n");
         *taille = 0;
         return NULL;
     }
-    
+
+    /* On parcourt pour vérifier si une ligne est vide */
     for(i = 0; i < p->n; i++){
         est_vide = 1;
         for(j = 0; j < p->m; j++){
@@ -295,15 +324,19 @@ int *ligne_vide(plateau *p, int *taille){
                 est_vide = 0;
             }
         }
+        /* Si à la fin du parcours d'une ligne toutes les valeurs étaient à 0 alors est_vide = 1*/
         if(est_vide){
+            /* On met à la valeur x du tableau le numéro de ligne */
             tab_vide[x] = i;
             x++;
         }
     }
+    /* Particulier mais taille est un pointeur via le *, on dit que taille = à x pour connaître la taille du nombre de lignes vides */
     *taille = x;
     return tab_vide;
 }
 
+/* Fonction pour afficher les valeurs d'un tableau */
 void aff_tab(int *tab, int taille){
     int i;
     
@@ -312,6 +345,7 @@ void aff_tab(int *tab, int taille){
     }
 }
 
+/* Fonction pour afficher les cases contenues dans le tableau l_cases */
 void afficher_l_cases(l_cases l_c){
     int i;
 
@@ -321,42 +355,61 @@ void afficher_l_cases(l_cases l_c){
     }
 }
 
-
+/* Fonction pour supprimer les lignes vides */
 plateau *suppression_ligne_vide(plateau *p, int *tab_vide, int taille){
     int i, j, k, est_vide;
     int new_i = 0;
     cases **new_tab;
 
+    /* On alloue un nouveau tableau avec le nombre de lignes totales - le nombre de lignes vides */
     if((new_tab = (cases **) malloc((p->n - taille) * sizeof(cases *))) == NULL){
         fprintf(stderr, "Erreur lors de l'allocation de la mémoire de new_tab\n");
         return p;
     }
 
-     for(i = 0; i < p->n; i++){
+    /* On parcourt chaque ligne */
+    for(i = 0; i < p->n; i++){
+        
+        /* On suppose que la ligne est non vide */
         est_vide = 0;
+        
+        /* On parcourt le tableau des lignes vides */
         for(j = 0; j < taille; j++){
+            
+            /* On vérifie si la ligne i est dans le tableau des lignes à supprimer */
             if(i == tab_vide[j]){
                 est_vide = 1;
             }
         }
 
+        /* Si c'est pas vide */
         if(!est_vide){
+
+            /* On la conserve dans le nouveau plateau */
             new_tab[new_i] = p->tab[i];
 
+            /* On met à jour la coordonnée x de chaque ligne */
             for(k = 0; k < p->m; k++){
                 new_tab[new_i][k].x = new_i;
             }
 
+            /* On incrémente l'indice */
             new_i++;
 
         } else {
+            
+            /* On libère la ligne vide */
             free(p->tab[i]);
         }
     }
 
+    /* On libère l'ancien plateau */
     free(p->tab);
 
+    /* On initialise le plateau avec le nouveau plateau créé */
     p->tab = new_tab;
+
+    /* Nouvelle longueur */
     p->n = new_i;
     
     return p;
@@ -367,6 +420,7 @@ plateau *suppression_ligne_vide(plateau *p, int *tab_vide, int taille){
 
 /***** BONUS AJOUT DE LIGNE  *****/
 
+/* Permet de vérifier si le plateau de jeu est vide */
 int plateau_vide(plateau *p){
     int i, j;
 
@@ -380,6 +434,7 @@ int plateau_vide(plateau *p){
     return 1;
 }
 
+/* Permet de retourner la dernière case du plateau qui est différente de 0 */
 cases *derniere_case(plateau *p){
     int i, j;
 
@@ -394,22 +449,27 @@ cases *derniere_case(plateau *p){
     return NULL;
 }
 
+/* Permet de demander à l'utilisateur si il veut utiliser le bonus ajout de ligne */
 plateau *utiliser_ajout_ligne(plateau *p){
     char rep = 'A';
+
+    /* On boucle si la valeur rentrée n'est pas bonne */
     while(rep != 'N' && rep != 'O'){
         printf("Voulez vous utiliser le bonus ajout de ligne ? (O ou N) : ");
         if(scanf(" %c", &rep) != 1 || (rep != 'O' && rep != 'N')){
-            fprintf(stderr, "Erreur il vous faut rentrer soit O ou N pour commencer\n");
+            fprintf(stderr, "Erreur il vous faut rentrer soit 'O' ou 'N' pour commencer\n");
         }
         viderBuffer();
     }
 
+    /* Si oui on utilise le bonus */
     if(rep == 'O'){
         p = bonus_ajout_ligne(p);
     }
     return p;
 }
 
+/* Utilisation du bonus ajout de ligne */
 plateau *bonus_ajout_ligne(plateau *p){
     l_cases l_c;
     cases *c;
@@ -418,6 +478,7 @@ plateau *bonus_ajout_ligne(plateau *p){
     /* Nombre max de cases dans le plateau */
     max = p->n * p->m;
 
+    /* Allocation de la liste de cases */
     if((l_c.c = (cases*) malloc ( max * sizeof(cases))) == NULL){
         printf("Erreur lors de l'allocation de mémoire de la liste de cases\n");
         return p;
@@ -435,26 +496,26 @@ plateau *bonus_ajout_ligne(plateau *p){
         }
     }
 
+    /* Initialisation de la longueur de l_c */
     l_c.n = k;
 
+    /* Initialisation de la dernière case */
     c = derniere_case(p);
 
-    if(c->x == p->n - 1 && c->y == p->m - 1){
-        printf("Ajout de ligne\n");
+    printf("Ajout de ligne\n");
 
-        /* Calcul du nombre de lignes nécessaire pour contenir toutes les cases non nulles */
-        nb_lig_all = l_c.n / p->m;
-        if(l_c.n % p->m != 0){
-            /* Si reste on rajoute une ligne en plus */
-            nb_lig_all += 1;
-        }
+    /* Calcul du nombre de lignes nécessaire pour contenir toutes les cases non nulles */
+    nb_lig_all = l_c.n / p->m;
+    if(l_c.n % p->m != 0){
+        /* Si reste on rajoute une ligne en plus */
+        nb_lig_all += 1;
+    }
 
-        /* Ajout des lignes supplémentaires */
-        if(!ajout_nb_ligne_plateau(p, nb_lig_all)){
-            fprintf(stderr, "Erreur : impossible d'ajouter des lignes\n");
-            free(l_c.c);
-            return p;
-        }
+    /* Ajout des lignes supplémentaires */
+    if(!ajout_nb_ligne_plateau(p, nb_lig_all)){
+        fprintf(stderr, "Erreur : impossible d'ajouter des lignes\n");
+        free(l_c.c);
+        return p;
     }
 
     k = 0;
@@ -489,26 +550,30 @@ plateau *bonus_ajout_ligne(plateau *p){
         i++;
     }
 
+    /* On libère l_c */
     free(l_c.c);
 
     return p;
 }
 
-
+/* Fonction qui ajoute un nombre de lignes dans le plateau */
 int ajout_nb_ligne_plateau(plateau *p, int nb_ligne){
     int i, j;
     int ancien_n = p->n;
     int new_n = ancien_n + nb_ligne;
     cases **new_tab;
 
+    /* On crée un nouveau plateau qui fait la taille du plateau de base + le nombre de ligne qu'on veut rajouter */
     new_tab = (cases**) realloc(p->tab, new_n * sizeof(cases*));
     if (new_tab == NULL) {
         fprintf(stderr, "Erreur lors de la réallocation de la mémoire du tableau\n");
         return 0;
     }
 
+    /* On initialise le plateau avec le nouveau */
     p->tab = new_tab;
 
+    /* On parcourt */
     for(i = ancien_n; i < new_n; i++){
         if((p->tab[i] = (cases*) malloc ( p->m * sizeof(cases))) == NULL){
             fprintf(stderr, "Erreur lors de l'allocation des nouvelles lignes\n");
@@ -517,6 +582,8 @@ int ajout_nb_ligne_plateau(plateau *p, int nb_ligne){
             }
             return 0;
         }
+
+        /* On initialise les cases à 0 */
         for(j = 0; j < p->m; j++){
             p->tab[i][j].x = i;
             p->tab[i][j].y = j;
