@@ -10,7 +10,7 @@
 /* Le main est vide, il contient simplement les valeurs dont on a besoin, ici le nombre de lignes et de colonnes du plateau et le plateau */
 int main(){
     
-    int n = 3;
+    int n = 5;
     int m = 6;
     plateau *p = NULL;
 

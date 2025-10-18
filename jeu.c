@@ -76,6 +76,7 @@ cases cases_haute(cases *c1, cases *c2){
 
 int voisin_fin_debut_ligne(cases *c1, cases *c2, plateau *p){
     cases c_h, c_b;
+    int i, j;
 
     /* Regarde quel cases est la + haute */
     c_h = cases_haute(c1, c2);
@@ -90,6 +91,37 @@ int voisin_fin_debut_ligne(cases *c1, cases *c2, plateau *p){
     /* On vérifie si la case haute est à la dernière colonne et si la case basse est à la 1ère colonne de la ligne d'après */
     if(c_h.y == p->m - 1 && c_b.x == c_h.x + 1 && c_b.y == 0){
         return 1;
+    }
+
+    /* Vérification avec des 0 entre c1 et c2 */
+    i = c_h.x;
+    j = c_h.y;
+
+    /* On parcourt tant qu'on a pas atteint la case d'en bas */
+    while(i != c_b.x || j != c_b.y){
+        /* On part de la case après celle d'en haut */
+        j++;
+
+
+        /* Vérifie si on ne dépasse pas le nombre de colonne max */
+        if(j == p->m){
+        j = 0;
+        i++;
+        }
+
+        /* Vérifie si on a atteint le but */
+        if(i == c_b.x && j == c_b.y){
+            if(p->tab[i][j].valeur == c_b.valeur){
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
+        /* Vérifie si la valeur de la case actuelle = 0 */
+        if(p->tab[i][j].valeur != 0){
+            return 0;
+        }
     }
 
     return 0;
@@ -285,11 +317,11 @@ int match(l_cases *l_c, plateau *p){
     /* Toutes les conditions pour le match */
     if((cases_similaire(&l_c->c[0], &l_c->c[1]) || verif_somme_10(&l_c->c[0], &l_c->c[1])) && (voisins(&l_c->c[0], &l_c->c[1], p) || (voisin_plus(&l_c->c[0], &l_c->c[1], p)) || (voisin_fin_debut_ligne(&l_c->c[0], &l_c->c[1], p)) )){
         /* Si toutes les conditions sont remplies */
-        printf("Il y a match\n");
+        /*printf("Il y a match\n");*/
         return 1;
     }
    
-    printf("Il y a pas match\n");
+    /*printf("Il y a pas match\n");*/
     return 0;
 }
 
@@ -605,36 +637,48 @@ tab_couples couples_possibles(plateau *p){
     int taille_max = p->n * p->m * p->n * p->m;
     t_c.n = 0;
 
-    t_c.lc = malloc(taille_max * sizeof(l_cases));
-    if(t_c.lc == NULL){
+    /* Allocation pour stocker les couples possibles du plateau */
+    if((t_c.lc = (l_cases *) malloc (taille_max * sizeof(l_cases))) == NULL){
         fprintf(stderr, "Erreur d'allocation mémoire pour tab_couples\n");
         t_c.n = 0;
         return t_c;
     }
 
+    /* Parcours de toutes les cases du plateau pour la première case du couple */
     for(i = 0; i < p->n; i++){
         for(j = 0; j < p->m; j++){
 
-            c1 = &p->tab[i][j];
+            c1 = &p->tab[i][j]; /* Pointeur première case */
+
+            /* On prend en compte que les cases non vides */
             if(c1->valeur != 0){
 
+                /* Parcours du plateau pour la deuxième case du couple */
                 for(k = 0; k < p->n; k++){
                     for(l = 0; l < p->m; l++){
+
+                        /* On évite les doublons en ne prenant que les couples dans un sens */
                         if(k > i || (k == i && l > j)){
 
-                            c2 = &p->tab[k][l];
+                            c2 = &p->tab[k][l]; /* Pointeur deuxième case */
+
+                            /* Valeur non vide */
                             if(c2->valeur != 0){
                             
-                                if((cases_similaire(c1, c2) || verif_somme_10(c1, c2)) && (voisins(c1, c2, p) || voisin_plus(c1, c2, p) || voisin_fin_debut_ligne(c1, c2, p))){
-                                    lc.n = 2;
-                                    lc.c = malloc(2 * sizeof(cases));
-                                    if(lc.c != NULL){
+                                /* Création de la structure l_cases */
+                                lc.n = 2;
+                                lc.c = malloc(2 * sizeof(cases));
+                                if(lc.c != NULL){
+                                    lc.c[0] = *c1;
+                                    lc.c[1] = *c2;
 
-                                        lc.c[0] = *c1;
-                                        lc.c[1] = *c2;
-
+                                    /* Vérification du match */
+                                    if(match(&lc, p)){
+                                        /* Si oui alors on ajoute */
                                         t_c.lc[t_c.n] = lc;
                                         t_c.n++;
+                                    } else {
+                                        free(lc.c);  /* libère la mémoire si pas de match */
                                     }
                                 }
                             }
@@ -648,6 +692,7 @@ tab_couples couples_possibles(plateau *p){
     return t_c;
 }
 
+/* Affiche les couples possibles */
 void afficher_couples_possibles(tab_couples t_c){
     int i;
 
@@ -660,39 +705,71 @@ void afficher_couples_possibles(tab_couples t_c){
     }
 }
 
+/* Libère les couples de cases */
 void liberer_tab_couples(tab_couples *t_c){
     int i;
 
+    /* Libère chaque tableau de cases alloué par couple */
     for(i = 0; i < t_c->n; i++){
         free(t_c->lc[i].c);
     }
+
+    /* Libère le tableau */
     free(t_c->lc);
+
+    /* Réinitialise la structure */
     t_c->n = 0;
     t_c->lc = NULL;
 }
 
+/* Choisi un couple aléatoire parmi le tableau de couple */
 l_cases couple_aleatoire(tab_couples *t_c){
     int random;
+    l_cases vide = {0, NULL};
     
-    random = rand() % ((t_c->n - 1) - 1 + 1) + 1;
+    /* Qu'un seul couple possible */
+    if(t_c->n == 1){
+        return t_c->lc[0];
+    } 
+    /* Aucun couple */
+    else if(t_c->n == 0){
+        printf("Il n'y a pas de solutions possibles\nUtilisez le bonus ajout de ligne\n");
+        return vide;
+    }
+
+    /* Si plusieurs alors on choisi aléatoirement un couple */
+    random = rand() % t_c->n;
 
     return t_c->lc[random];
 }
 
+/* Utilisation du bonus indice */
 void bonus_indice(plateau *p){
     tab_couples t_c;
     l_cases l_c;
 
+    /* Couple possible */
     t_c = couples_possibles(p);
+
+    /* Couple choisit */
     l_c = couple_aleatoire(&t_c);
 
+    /* Si aucun couple retourne rien */
+    if(l_c.n == 0){
+        return;
+    } 
+
+    /* Affiche du couple choisit */
     printf("Voici une solution possible parmi tous les couples possibles \n");
     afficher_l_cases(l_c);
     
 }
 
+/* Demande d'utilisation du bonus indice */
 int utiliser_indice(plateau *p){
     char rep = 'A';
+
+    /* On boucle si la valeur rentrée n'est pas bonne */
     while(rep != 'N' && rep != 'O'){
         printf("Voulez vous utiliser le BONUS INDICE ? (O ou N) : ");
         if(scanf(" %c", &rep) != 1 || (rep != 'O' && rep != 'N')){
@@ -701,6 +778,7 @@ int utiliser_indice(plateau *p){
         viderBuffer();
     }
 
+    /* Si oui on utilise le bonus */
     if(rep == 'O'){
         bonus_indice(p);
         return 1;

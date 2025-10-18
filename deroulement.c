@@ -13,20 +13,20 @@ void deroulement(plateau *p, int n, int m){
     tab_couples t_c;
 
 
-    /*cases *c1, *c2, *c3, *c4, *c5, *c6, *c7, *c8, *c9, *c10, *c11, *c12;
- */
-    /*c1 = initialisation_cases(0, 2, 3);
-    c2 = initialisation_cases(0, 3, 7);
-    c3 = initialisation_cases(1, 0, 0);
-    c4 = initialisation_cases(1, 1, 0);
-    c5 = initialisation_cases(1, 2, 7);
-    c6 = initialisation_cases(1, 1, 5);
-    c7 = initialisation_cases(1, 2, 5);
+    /*cases *c1, *c2;, *c3, *c4, *c5, *c6, *c7, *c8, *c9, *c10, *c11, *c12;*/
+
+    /*c1 = initialisation_cases(0, 0, 1);
+    c2 = initialisation_cases(0, 1, 1);
+    c3 = initialisation_cases(2, 5, 1);
+    c4 = initialisation_cases(3, 0, 0);
+    c5 = initialisation_cases(3, 1, 9);
+    c6 = initialisation_cases(0, 0, 5);
+    c7 = initialisation_cases(0, 1, 5);
     c8 = initialisation_cases(1, 3, 5);
     c9 = initialisation_cases(2, 0, 5);
     c10 = initialisation_cases(2, 1, 5);
     c11 = initialisation_cases(2, 2, 5);
-    c12 = initialisation_cases(2, 3, 5); */
+    c12 = initialisation_cases(2, 3, 5);*/
 
     p = initialisation_plateau(n, m);
     initialisation_aleatoire(p);
@@ -71,5 +71,9 @@ void deroulement(plateau *p, int n, int m){
                 
         liberer_tab_couples(&t_c);
     }
+
+    if(system("clear") == 0){
+    }
+    printf("Vous avez gagné !\n");
 }
 
