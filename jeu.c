@@ -785,3 +785,67 @@ int utiliser_indice(plateau *p){
     }
     return 0;
 }
+
+parti initialiser_score(char *nom_joueur){
+    char chemin[256], ligne[80];
+    parti joueur;
+    FILE *f;
+    snprintf(chemin,sizeof(chemin),"%s.txt",nom_joueur);
+    joueur.score = 0;
+    joueur.score_max = 0;
+    
+    f = fopen(chemin,"r");
+    if (f){
+        if (fgets(ligne, 80, f) != NULL) {
+            joueur.score_max = atoi(ligne);
+        }
+        
+        if (fgets(ligne, sizeof(ligne), f) != NULL) {
+            joueur.score = atoi(ligne);
+        }
+        
+        fclose(f);
+    } else {
+        f = fopen(chemin, "w");
+        if (f) {
+            fprintf(f, "0\n0");
+            fclose(f);
+        } else {
+            fprintf(stderr, "Erreur : impossible de créer le fichier %s.txt\n", chemin);
+        }
+        
+    }
+    joueur.nom_joueur = nom_joueur;
+    return joueur;
+}
+
+void sauvegarder_parti(parti joueur) {
+    char chemin[256];
+    FILE *f;
+
+    snprintf(chemin, sizeof(chemin), "%s.txt", joueur.nom_joueur);
+
+    f = fopen(chemin, "w");
+    if (f) {
+        fprintf(f, "%d\n%d\n", joueur.score_max, joueur.score);
+        fclose(f);
+    } else {
+        fprintf(stderr, "Erreur : impossible d'ouvrir %s pour écriture\n", chemin);
+    }
+}
+
+void afficher_score(){
+    parti joueur;
+    char nom_joueur[80];
+    printf("quel est votre nom de joueur ?");
+    if (scanf("%79s", nom_joueur) != 1) {
+        fprintf(stderr, "Erreur de lecture du nom du joueur\n");
+        exit(EXIT_FAILURE);
+    }
+    joueur = initialiser_score(nom_joueur);
+    
+    sauvegarder_parti(joueur);
+    
+    printf("joueur : %s \nscore : %d \nmeilleur_score : %d\n",joueur.nom_joueur,joueur.score, joueur.score_max);
+}
+

@@ -43,7 +43,7 @@ void deroulement(plateau *p, int n, int m){
     p->tab[c10->x][c10->y].valeur = c10->valeur;
     p->tab[c11->x][c11->y].valeur = c11->valeur;
     p->tab[c12->x][c12->y].valeur = c12->valeur;*/
-
+    afficher_score();
     afficher_plateau(p);
 
     while(p->n != 0){

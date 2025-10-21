@@ -29,4 +29,11 @@ typedef struct {
     l_cases *lc; /* Contient des listes de cases */
 } tab_couples; /* Globalement ça revient à faire un tableau de couple de cases [ [cases1 ; cases 2] , [cases1 ; cases 2] ] etc de longueur n */
 
+
+typedef struct{
+    int score_max;
+    int score;
+    char *nom_joueur;
+} parti;
+
 #endif

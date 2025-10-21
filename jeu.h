@@ -61,4 +61,8 @@ void bonus_indice(plateau *p);
 
 int utiliser_indice(plateau *p);
 
+parti initialiser_score(char *nom_joueur);
+    
+void afficher_score();
+
 #endif
