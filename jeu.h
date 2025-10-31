@@ -1,6 +1,11 @@
+
+/*jeu.h*/
+
 #ifndef _JEU_H_
 #define _JEU_H_
 #include "types.h"
+
+void viderBuffer();
 
 void afficher_case(cases *c);
 
@@ -62,7 +67,11 @@ void bonus_indice(plateau *p);
 int utiliser_indice(plateau *p);
 
 parti initialiser_score(char *nom_joueur);
-    
+
+int points_pour_match(l_cases *l_c);
+
+void sauvegarder_parti(parti joueur);
+
 void afficher_score();
 
 #endif

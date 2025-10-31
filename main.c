@@ -1,3 +1,6 @@
+
+/*main.c*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>

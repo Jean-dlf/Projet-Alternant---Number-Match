@@ -1,3 +1,6 @@
+
+/*plateau.c*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "types.h"

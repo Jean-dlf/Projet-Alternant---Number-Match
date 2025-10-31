@@ -1,3 +1,6 @@
+
+#Makefile
+
 CC = gcc
 OPTION = -W -Wall -pedantic -std=c89 -O2
 

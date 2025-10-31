@@ -1,4 +1,6 @@
 
+/*jeu.c*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "types.h"
@@ -37,6 +39,19 @@ int verif_somme_10(cases *c1, cases *c2){
     }
 
     return 0;
+}
+
+int points_pour_match(l_cases *l_c){
+    /*  - si somme == 10  -> 15 points (bonus)
+        - si valeurs identiques -> 10 points
+        - fallback -> 5 points */
+    if(verif_somme_10(&l_c->c[0], &l_c->c[1])){
+        return 15;
+    }
+    if(cases_similaire(&l_c->c[0], &l_c->c[1])){
+        return 10;
+    }
+    return 5;
 }
 
 /* Permet de vérifier si une case à une valeur de 0 soit est vide */
@@ -796,24 +811,19 @@ parti initialiser_score(char *nom_joueur){
     
     f = fopen(chemin,"r");
     if (f){
-        if (fgets(ligne, 80, f) != NULL) {
-            joueur.score_max = atoi(ligne);
-        }
-        
         if (fgets(ligne, sizeof(ligne), f) != NULL) {
-            joueur.score = atoi(ligne);
+            joueur.score_max = atoi(ligne);
         }
         
         fclose(f);
     } else {
         f = fopen(chemin, "w");
         if (f) {
-            fprintf(f, "0\n0");
+            fprintf(f, "0\n0\n");
             fclose(f);
         } else {
             fprintf(stderr, "Erreur : impossible de créer le fichier %s.txt\n", chemin);
-        }
-        
+        }  
     }
     joueur.nom_joueur = nom_joueur;
     return joueur;

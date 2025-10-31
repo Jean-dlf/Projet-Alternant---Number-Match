@@ -1,3 +1,6 @@
+
+/*deroulement.c*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "types.h"
@@ -6,11 +9,20 @@
 #include "jeu.h"
 
 void deroulement(plateau *p, int n, int m){
-    int *tab_vide;
-    int taille;
+    int *tab_vide = NULL;
+    int taille, pts, i;
     l_cases l_c;
     plateau *new_p;
-    tab_couples t_c;
+    char nom_joueur[80];
+
+    printf("Entrez votre nom de joueur : ");
+    if(scanf("%79s", nom_joueur) != 1){
+        fprintf(stderr, "Erreur lecture nom joueur\n");
+        return;
+    }
+    viderBuffer();
+
+    parti joueur = initialiser_score(nom_joueur);
 
 
     /*cases *c1, *c2;, *c3, *c4, *c5, *c6, *c7, *c8, *c9, *c10, *c11, *c12;*/
@@ -29,6 +41,10 @@ void deroulement(plateau *p, int n, int m){
     c12 = initialisation_cases(2, 3, 5);*/
 
     p = initialisation_plateau(n, m);
+    if(p == NULL){
+        fprintf(stderr,"Erreur initialisation plateau\n");
+        return;
+    }
     initialisation_aleatoire(p);
 
     /*p->tab[c1->x][c1->y].valeur = c1->valeur;
@@ -43,7 +59,7 @@ void deroulement(plateau *p, int n, int m){
     p->tab[c10->x][c10->y].valeur = c10->valeur;
     p->tab[c11->x][c11->y].valeur = c11->valeur;
     p->tab[c12->x][c12->y].valeur = c12->valeur;*/
-    afficher_score();
+
     afficher_plateau(p);
 
     while(p->n != 0){
@@ -52,9 +68,18 @@ void deroulement(plateau *p, int n, int m){
         if(match(&l_c, p)){
             mise_a_zero(p, l_c);
 
+            /*ajout des points pour ce match*/
+            pts = points_pour_match(&l_c);
+            joueur.score += pts;
+            printf("+%d points ! Score actuel : %d\n",pts,joueur.score);
+
             tab_vide = ligne_vide(p, &taille);
             if(taille != 0){
                 suppression_ligne_vide(p, tab_vide, taille);
+            }
+            if(tab_vide != NULL){
+                free(tab_vide);
+                tab_vide = NULL;
             }
         }
         afficher_plateau(p);
@@ -68,12 +93,26 @@ void deroulement(plateau *p, int n, int m){
 
             utiliser_indice(p);
         }
-                
-        liberer_tab_couples(&t_c);
+    }
+
+    if(joueur.score > joueur.score_max){
+        joueur.score_max = joueur.score;
+        printf("Nouveau record ! %d points \n", joueur.score_max);
+    }
+    sauvegarder_parti(joueur);
+
+    /*Libération mémoire plateau*/
+    if(p != NULL){
+        for(i = 0; i < p->n; i++){
+            free(p->tab[i]);
+        }
+        free(p->tab);
+        free(p);
+        p = NULL;
     }
 
     if(system("clear") == 0){
     }
-    printf("Vous avez gagné !\n");
+    printf("Vous avez gagné ! Score final : %d\n",joueur.score);
 }
 
