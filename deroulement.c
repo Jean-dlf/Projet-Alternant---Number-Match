@@ -1,107 +1,117 @@
-
-/*deroulement.c*/
-
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "types.h"
-#include "plateau.h"
-#include "initialisation.h"
 #include "jeu.h"
+#include "initialisation.h"
+#include "plateau.h"
 
-void deroulement(plateau *p, int n, int m){
+void deroulement(plateau *p, int n, int m, int save, parti *joueur_s){
     int *tab_vide = NULL;
-    int taille, pts, i;
+    int taille, pts, i, nb_ajt_lig, nb_ind_cpl, valide, perdu;
     l_cases l_c;
     plateau *new_p;
     char nom_joueur[80];
+    parti joueur;
 
-    printf("Entrez votre nom de joueur : ");
-    if(scanf("%79s", nom_joueur) != 1){
-        fprintf(stderr, "Erreur lecture nom joueur\n");
-        return;
+    perdu = 0;
+
+    if(save){
+        printf("Entrez votre nom de joueur : ");
+        if(scanf("%79s", nom_joueur) != 1){
+            fprintf(stderr, "Erreur lecture nom joueur\n");
+            return ;
+        }
+
+        viderBuffer();
+        joueur = initialiser_score(nom_joueur);
+
+        p = initialisation_plateau(n, m);
+        if(p == NULL){
+            fprintf(stderr,"Erreur initialisation plateau\n");
+            return ;
+        }
+
+        nb_ajt_lig = 3;
+        nb_ind_cpl = 3;
+
+        initialisation_aleatoire(p);
+    } else {
+        printf("Partie chargée : %d x %d\n", p->n, p->m);
+        joueur = *joueur_s;
+        nb_ajt_lig = joueur.bonus_ajout_ligne;
+        nb_ind_cpl = joueur.bonus_indice;
     }
-    viderBuffer();
-
-    parti joueur = initialiser_score(nom_joueur);
-
-
-    /*cases *c1, *c2;, *c3, *c4, *c5, *c6, *c7, *c8, *c9, *c10, *c11, *c12;*/
-
-    /*c1 = initialisation_cases(0, 0, 1);
-    c2 = initialisation_cases(0, 1, 1);
-    c3 = initialisation_cases(2, 5, 1);
-    c4 = initialisation_cases(3, 0, 0);
-    c5 = initialisation_cases(3, 1, 9);
-    c6 = initialisation_cases(0, 0, 5);
-    c7 = initialisation_cases(0, 1, 5);
-    c8 = initialisation_cases(1, 3, 5);
-    c9 = initialisation_cases(2, 0, 5);
-    c10 = initialisation_cases(2, 1, 5);
-    c11 = initialisation_cases(2, 2, 5);
-    c12 = initialisation_cases(2, 3, 5);*/
-
-    p = initialisation_plateau(n, m);
-    if(p == NULL){
-        fprintf(stderr,"Erreur initialisation plateau\n");
-        return;
-    }
-    initialisation_aleatoire(p);
-
-    /*p->tab[c1->x][c1->y].valeur = c1->valeur;
-    p->tab[c2->x][c2->y].valeur = c2->valeur;
-    p->tab[c3->x][c3->y].valeur = c3->valeur;
-    p->tab[c4->x][c4->y].valeur = c4->valeur;
-    p->tab[c5->x][c5->y].valeur = c5->valeur;
-    p->tab[c6->x][c6->y].valeur = c6->valeur;
-    p->tab[c7->x][c7->y].valeur = c7->valeur;
-    p->tab[c8->x][c8->y].valeur = c8->valeur;
-    p->tab[c9->x][c9->y].valeur = c9->valeur;
-    p->tab[c10->x][c10->y].valeur = c10->valeur;
-    p->tab[c11->x][c11->y].valeur = c11->valeur;
-    p->tab[c12->x][c12->y].valeur = c12->valeur;*/
 
     afficher_plateau(p);
 
-    while(p->n != 0){
+    while(p->n != 0 && perdu == 0){
         l_c = liste_paire(p);
 
         if(match(&l_c, p)){
             mise_a_zero(p, l_c);
 
-            /*ajout des points pour ce match*/
+            /* ajout des points pour ce match */
             pts = points_pour_match(&l_c);
             joueur.score += pts;
-            printf("+%d points ! Score actuel : %d\n",pts,joueur.score);
+            printf("+%d points ! Score actuel : %d\n", pts, joueur.score);
 
             tab_vide = ligne_vide(p, &taille);
             if(taille != 0){
                 suppression_ligne_vide(p, tab_vide, taille);
             }
+
             if(tab_vide != NULL){
                 free(tab_vide);
                 tab_vide = NULL;
             }
         }
+
         afficher_plateau(p);
 
         if(!plateau_vide(p)){
-            new_p = utiliser_ajout_ligne(p);
-            if(new_p != p){
-                p = new_p;
+            if(nb_ajt_lig > 0){
+                new_p = utiliser_ajout_ligne(p, &valide);
+                if(new_p != p){
+                    p = new_p;
+                }
+                if(valide == 1/* && compte_ajout_ligne(nb_ajt_lig) != -1*/){
+                    nb_ajt_lig -= 1;
+                }
+            } else {
+                printf("Vous n'avez plus d'utilisation de bonus d'ajout de lignes possible\n");
             }
+
+            if(nb_ind_cpl > 0){
+                if(utiliser_indice(p)/* && compte_indice_couple(nb_ind_cpl) != -1*/){
+                    nb_ind_cpl -= 1;
+                }
+            } else {
+                printf("Vous n'avez plus d'utilisation de bonus d'indice de couple possible\n");
+            }
+
             afficher_plateau(p);
 
-            utiliser_indice(p);
+            if(defaite(p, nb_ajt_lig, nb_ind_cpl)){
+                printf("Vous avez perdu\n");
+                return ;
+            }
         }
+
+        printf("Nombre d'utilisation possible du bonus d'indice de couples : %d\n", nb_ind_cpl);
+        printf("Nombre d'utilisation possible du bonus d'ajout de lignes : %d\n", nb_ajt_lig);
     }
 
     if(joueur.score > joueur.score_max){
         joueur.score_max = joueur.score;
         printf("Nouveau record ! %d points \n", joueur.score_max);
     }
+
+    joueur.bonus_ajout_ligne = nb_ajt_lig;
+    joueur.bonus_indice = nb_ind_cpl;
+
     sauvegarder_parti(joueur);
 
-    /*Libération mémoire plateau*/
+    /* Libération mémoire plateau */
     if(p != NULL){
         for(i = 0; i < p->n; i++){
             free(p->tab[i]);
@@ -111,8 +121,6 @@ void deroulement(plateau *p, int n, int m){
         p = NULL;
     }
 
-    if(system("clear") == 0){
-    }
-    printf("Vous avez gagné ! Score final : %d\n",joueur.score);
+    printf("Vous avez gagné ! Score final : %d\n", joueur.score);
+    return ;
 }
-

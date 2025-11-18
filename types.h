@@ -4,6 +4,9 @@
 #ifndef _TYPES_H_
 #define _TYPES_H_
 
+#define LX 900
+#define LY 800
+
 /* Une case du plateau */
 typedef struct{
     int x; /* Coordonnée x : ligne */
@@ -36,7 +39,22 @@ typedef struct {
 typedef struct{
     int score_max;
     int score;
-    char *nom_joueur;
+    char nom_joueur[11];
+    int bonus_ajout_ligne;
+    int bonus_indice;
 } parti;
+typedef parti tparti[11];
+
+/* Menu */
+#define L 50
+
+typedef struct{
+  int x;
+  int y;
+  int hauteur;
+  int largeur;
+  int valeur;
+  char txt[L];
+} bouton;
 
 #endif

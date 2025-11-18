@@ -497,8 +497,10 @@ cases *derniere_case(plateau *p){
 }
 
 /* Permet de demander à l'utilisateur si il veut utiliser le bonus ajout de ligne */
-plateau *utiliser_ajout_ligne(plateau *p){
+plateau *utiliser_ajout_ligne(plateau *p, int *valide){
     char rep = 'A';
+
+    *valide = 0;
 
     /* On boucle si la valeur rentrée n'est pas bonne */
     while(rep != 'N' && rep != 'O'){
@@ -511,6 +513,7 @@ plateau *utiliser_ajout_ligne(plateau *p){
 
     /* Si oui on utilise le bonus */
     if(rep == 'O'){
+        *valide = 1;
         p = bonus_ajout_ligne(p);
     }
     return p;
@@ -801,61 +804,25 @@ int utiliser_indice(plateau *p){
     return 0;
 }
 
-parti initialiser_score(char *nom_joueur){
-    char chemin[256], ligne[80];
-    parti joueur;
-    FILE *f;
-    snprintf(chemin,sizeof(chemin),"%s.txt",nom_joueur);
-    joueur.score = 0;
-    joueur.score_max = 0;
-    
-    f = fopen(chemin,"r");
-    if (f){
-        if (fgets(ligne, sizeof(ligne), f) != NULL) {
-            joueur.score_max = atoi(ligne);
+/* Défaite */
+int vide(plateau *p){
+    int i, j;
+    for(i = 0; i < p->n; i++){
+        for(j = 0; j < p->m; j++){
+            if(p->tab[i][j].valeur != 0){
+                return 0;
+            } 
         }
-        
-        fclose(f);
-    } else {
-        f = fopen(chemin, "w");
-        if (f) {
-            fprintf(f, "0\n0\n");
-            fclose(f);
-        } else {
-            fprintf(stderr, "Erreur : impossible de créer le fichier %s.txt\n", chemin);
-        }  
-    }
-    joueur.nom_joueur = nom_joueur;
-    return joueur;
+    } 
+    return 1; 
 }
 
-void sauvegarder_parti(parti joueur) {
-    char chemin[256];
-    FILE *f;
+int defaite(plateau *p, int nb_ajt_lig, int nb_ind_cpl){
+    tab_couples c_possibles = couples_possibles(p);
 
-    snprintf(chemin, sizeof(chemin), "%s.txt", joueur.nom_joueur);
-
-    f = fopen(chemin, "w");
-    if (f) {
-        fprintf(f, "%d\n%d\n", joueur.score_max, joueur.score);
-        fclose(f);
-    } else {
-        fprintf(stderr, "Erreur : impossible d'ouvrir %s pour écriture\n", chemin);
+    if(nb_ajt_lig == 0 && nb_ind_cpl == 0 && !vide(p) && c_possibles.n == 0) {
+        return 1;
     }
-}
 
-void afficher_score(){
-    parti joueur;
-    char nom_joueur[80];
-    printf("quel est votre nom de joueur ?");
-    if (scanf("%79s", nom_joueur) != 1) {
-        fprintf(stderr, "Erreur de lecture du nom du joueur\n");
-        exit(EXIT_FAILURE);
-    }
-    joueur = initialiser_score(nom_joueur);
-    
-    sauvegarder_parti(joueur);
-    
-    printf("joueur : %s \nscore : %d \nmeilleur_score : %d\n",joueur.nom_joueur,joueur.score, joueur.score_max);
+    return 0;
 }
-

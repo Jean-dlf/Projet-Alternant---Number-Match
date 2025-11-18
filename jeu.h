@@ -47,12 +47,11 @@ int plateau_vide(plateau *p);
 
 cases *derniere_case(plateau *p);
 
-plateau *utiliser_ajout_ligne(plateau *p);
+plateau *utiliser_ajout_ligne(plateau *p, int *valide);
 
 plateau *bonus_ajout_ligne(plateau *p);
 
 int ajout_nb_ligne_plateau(plateau *p, int nb_ligne);
-
 
 tab_couples couples_possibles(plateau *p);
 
@@ -73,5 +72,11 @@ int points_pour_match(l_cases *l_c);
 void sauvegarder_parti(parti joueur);
 
 void afficher_score();
+
+int vide(plateau *p);
+
+int long_tab_c(tab_couples t_c);
+
+int defaite(plateau *p, int nb_ajt_lig, int nb_ind_cpl);
 
 #endif
