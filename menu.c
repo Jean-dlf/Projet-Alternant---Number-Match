@@ -55,9 +55,9 @@ void menu_p(bouton t_bouton_menu[5]){
     taille_p = 180;
     police = MLV_load_font("./game_over.ttf", taille_p);
 
-    MLV_get_size_of_adapted_text_box_with_font("PUYO PUYO", police, 10, &text_width, &text_height);
+    MLV_get_size_of_adapted_text_box_with_font("NUMBER MATCH", police, 10, &text_width, &text_height);
   
-    MLV_draw_adapted_text_box_with_font((LX - text_width) / 2, text_height / 3 - 25, "PUYO PUYO", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+    MLV_draw_adapted_text_box_with_font((LX - text_width) / 2, text_height / 3 - 25, "NUMBER MATCH", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
     taille_p = 100;
     police = MLV_load_font("./game_over.ttf", taille_p);
@@ -119,9 +119,9 @@ void menu_rules(bouton *retour){
     taille_p = 60;
     police = MLV_load_font("./game_over.ttf", taille_p);
 
-    sprintf(affichage, "VOTRE OBJECTIF : VIDER LE PLATEAU DE JEU\nPOUR CELA VOUS DEVEZ TROUVER DES PAIRES DE CHIFFRES IDENTIQUES\nLES PAIRES PEUVENT ETRE :\n -HORIZONTALES --- (FLECHE ROUGE)\n-VERTICALES --- (FLECHE ORANGE)\n-EN DIAGONALE --- (FLECHE VIOLETTE)\n-OU UN CHIFFRE EN FIN DE LIGNE ET L'AUTRE AU DEBUT DE LA SUIVANTE\n --- (FLECHE BLEUE) ---\n");
+    sprintf(affichage, "VOTRE OBJECTIF : VIDER LE PLATEAU DE JEU\nPOUR CELA VOUS DEVEZ TROUVER DES PAIRES DE CHIFFRES IDENTIQUES\nLES PAIRES PEUVENT ETRE :\n -HORIZONTALES --- (FLECHE ROUGE)\n-VERTICALES --- (FLECHE ORANGE)\n-EN DIAGONALE --- (FLECHE VIOLETTE)\n-OU UN CHIFFRE EN FIN DE LIGNE ET L'AUTRE AU DEBUT DE LA SUIVANTE\n --- (FLECHE BLEUE)\n");
     MLV_get_size_of_adapted_text_box_with_font(affichage, police, 10, &long_text, &haut_text);
-    MLV_draw_adapted_text_box_with_font( (LX - long_text) / 2, haut_text / 3 + 50, affichage, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+    MLV_draw_adapted_text_box_with_font( (LX - long_text) / 2, haut_text / 3, affichage, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
     /* Bouton Retour */
     taille_p = 80;
@@ -134,9 +134,9 @@ void menu_rules(bouton *retour){
     x = LX / 2;
 
     image[0] = MLV_load_image(noms_image[0]);
+    MLV_resize_image_with_proportions(image[0], 300, 300);
     MLV_get_image_size(image[0], &long_img, &haut_img);
-    MLV_resize_image_with_proportions(image[0], 250, 250);
-    MLV_draw_image(image[0], x - 125, LY - 240);
+    MLV_draw_image(image[0], x - (long_img / 2), LY - haut_img - 25);
     MLV_free_image(image[0]);
 
     MLV_free_font(police);
@@ -150,6 +150,7 @@ void menu_score(bouton *retour) {
     tparti t_score;
     int long_text, haut_text, i, k, taille_p;
     MLV_Font *police;
+    MLV_Color color;
 
     MLV_clear_window(MLV_COLOR_BEIGE);
 
@@ -165,9 +166,26 @@ void menu_score(bouton *retour) {
     k = 0;
 
     for(i = 0; i < 10; i++) {
-        sprintf(affichage, "%s |   Score = %d   |   Pseudo = %s", nom_bouton_score[i], 80, "Oui" /* t_score[i].score, t_score[i].nom_joueur */);
+        switch(i){
+            case 0:
+            color = MLV_rgba(255, 215, 0, 255);
+            break;
+
+            case 1:
+            color = MLV_rgba(192, 192, 192, 255);
+            break;
+
+            case 2:
+            color = MLV_rgba(205, 127, 50, 255);
+            break;
+
+            default:
+            color = MLV_COLOR_BLACK;
+            break;
+        }
+        sprintf(affichage, "%s --   Score = %d   |   Pseudo = %s   |   Timer = ", nom_bouton_score[i], 80, "Oui" /* t_score[i].score, t_score[i].nom_joueur */);
         MLV_get_size_of_adapted_text_box_with_font(affichage, police, 10, &long_text, &haut_text);
-        MLV_draw_adapted_text_box_with_font(30, haut_text / 3 + 100 + k, affichage, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+        MLV_draw_adapted_text_box_with_font(30, haut_text / 3 + 100 + k, affichage, police, 10, MLV_ALPHA_TRANSPARENT, color, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
         k += 60;
     }
 
