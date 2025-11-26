@@ -11,7 +11,7 @@
 typedef struct{
     int x; /* Coordonnée x : ligne */
     int y; /* Coordonnée y : colonne */
-    int valeur; /* Valeur de la case */
+    int value; /* Valeur de la case */
 } cases;
 
 /* Type plateau de jeu (qui contient toutes les cases) */
@@ -39,9 +39,9 @@ typedef struct {
 typedef struct{
     int score_max;
     int score;
-    char nom_joueur[11];
-    int bonus_ajout_ligne;
-    int bonus_indice;
+    char name_player[11];
+    int bonus_add_lines;
+    int bonus_clue;
 } parti;
 typedef parti tparti[11];
 
@@ -51,10 +51,9 @@ typedef parti tparti[11];
 typedef struct{
   int x;
   int y;
-  int hauteur;
-  int largeur;
-  int valeur;
+  int height;
+  int width;
   char txt[L];
-} bouton;
+} button;
 
 #endif

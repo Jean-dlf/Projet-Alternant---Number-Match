@@ -6,7 +6,7 @@
 #include "types.h"
 #include <time.h>
 
-void afficher_plateau(plateau *p){
+void display_plateau(plateau *p){
     int i, j;
 
     printf("      ");
@@ -17,7 +17,7 @@ void afficher_plateau(plateau *p){
     for(i = 0; i < p->n; i++){
         printf("%d - ", i);
         for(j = 0; j < p->m; j++){
-            printf("| %d ", p->tab[i][j].valeur);
+            printf("| %d ", p->tab[i][j].value);
         }
         printf("| \n");
     }

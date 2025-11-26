@@ -3,10 +3,10 @@ OPTION = -W -Wall -pedantic -std=c89 -O2
 
 all: clean clearscreen match
 
-match: main.o initialisation.o plateau.o jeu.o deroulement.o menu.o gestion_menu.o save.o
-	$(CC) $(OPTION) `pkg-config --cflags MLV` `pkg-config --libs-only-other --libs-only-L MLV` main.o initialisation.o plateau.o jeu.o deroulement.o menu.o gestion_menu.o save.o `pkg-config --libs-only-l MLV` -o match
+match: main.o initialisation.o plateau.o game_logic.o game.o menu.o menu_management.o save.o plateau_mlv.o mlv.o
+	$(CC) $(OPTION) `pkg-config --cflags MLV` `pkg-config --libs-only-other --libs-only-L MLV` main.o initialisation.o plateau.o game_logic.o game.o menu.o menu_management.o save.o plateau_mlv.o mlv.o `pkg-config --libs-only-l MLV` -o match
 
-main.o: main.c initialisation.h plateau.h jeu.h deroulement.h menu.o gestion_menu.o save.o
+main.o: main.c initialisation.h plateau.h game_logic.h game.h menu.h menu_management.h save.h plateau_mlv.h mlv.h
 	$(CC) $(OPTION) main.c -c
 
 initialisation.o: initialisation.c initialisation.h
@@ -15,20 +15,26 @@ initialisation.o: initialisation.c initialisation.h
 plateau.o: plateau.c plateau.h
 	$(CC) $(OPTION) plateau.c -c
 
-jeu.o: jeu.c jeu.h
-	$(CC) $(OPTION) jeu.c -c
+game_logic.o: game_logic.c game_logic.h
+	$(CC) $(OPTION) game_logic.c -c
 
-deroulement.o: deroulement.c deroulement.h
-	$(CC) $(OPTION) deroulement.c -c
+game.o: game.c game.h
+	$(CC) $(OPTION) game.c -c
 
 menu.o: menu.c menu.h
 	$(CC) $(OPTION) menu.c -c
 
-gestion_menu:o gestion_menu.c gestion_menu.h
-	$(CC) $(OPTION) gestion_menu.c -c
+menu_management:o menu_management.c menu_management.h
+	$(CC) $(OPTION) menu_management.c -c
 
 save.o: save.c save.h
 	$(CC) $(OPTION) save.c -c
+
+plateau_mlv.o: plateau_mlv.c plateau_mlv.h
+	$(CC) $(OPTION) plateau_mlv.c -c
+
+mlv.o: mlv.c mlv.h
+	$(CC) $(OPTION) mlv.c -c
 
 clearscreen:
 	clear

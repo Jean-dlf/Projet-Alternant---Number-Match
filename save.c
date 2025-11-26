@@ -6,7 +6,7 @@
 
 /*** Parti score et nom  ***/
 
-int charger_save(char *nom, parti *jo, plateau **p){
+int load_save(char *nom, parti *jo, plateau **p){
     FILE *f = NULL;
     int i, j, n, m;
 
@@ -15,7 +15,7 @@ int charger_save(char *nom, parti *jo, plateau **p){
         return -1;
     }
 
-    if(fscanf(f, "%10s %d %d", jo->nom_joueur, &jo-> score, &jo->score_max) != 3){
+    if(fscanf(f, "%10s %d %d", jo->name_player, &jo-> score, &jo->score_max) != 3){
         fprintf(stderr, "Erreur lors de la lecture du nom du joueur, de son score et de son meilleur score\n");
         fclose(f);
         return -1;
@@ -36,7 +36,7 @@ int charger_save(char *nom, parti *jo, plateau **p){
 
     for(i = 0; i < n; i++){
         for(j = 0; j < m; j++){
-            if(fscanf(f, "%d", &(*p)->tab[i][j].valeur) != 1){
+            if(fscanf(f, "%d", &(*p)->tab[i][j].value) != 1){
                 fprintf(stderr, "Erreur lors de la lecture de la case [%d ; %d] du plateau de jeu\n", i, j);
                 fclose(f);
                 return -1;
@@ -44,7 +44,7 @@ int charger_save(char *nom, parti *jo, plateau **p){
         }
     }
 
-    if(fscanf(f, "%d %d", &jo->bonus_ajout_ligne, &jo->bonus_indice) != 2){
+    if(fscanf(f, "%d %d", &jo->bonus_add_lines, &jo->bonus_clue) != 2){
         fprintf(stderr, "Erreur lors de la lecture du nombre des bonus\n");
         fclose(f);
         return -1;
@@ -54,7 +54,7 @@ int charger_save(char *nom, parti *jo, plateau **p){
     return 1;
 }
 
-int save_parti(char *nom, parti *jo, plateau *p){
+int save_game(char *nom, parti *jo, plateau *p){
     FILE *f;
     int i, j;
 
@@ -63,81 +63,81 @@ int save_parti(char *nom, parti *jo, plateau *p){
         return -1;
     }
 
-    fprintf(f, "%10s %d %d\n", jo->nom_joueur, jo->score, jo->score_max);
+    fprintf(f, "%10s %d %d\n", jo->name_player, jo->score, jo->score_max);
 
     fprintf(f, "%d %d", p->n, p->m);
 
     for(i = 0; i < p->n; i++){
         for(j = 0; j < p->m; j++){
-            fprintf(f, "%d ", p->tab[i][j].valeur);
+            fprintf(f, "%d ", p->tab[i][j].value);
         }
         fprintf(f, "\n");
     }
 
-    fprintf(f, "%d %d\n", jo ->bonus_ajout_ligne, jo->bonus_indice);
+    fprintf(f, "%d %d\n", jo ->bonus_add_lines, jo->bonus_clue);
 
     fclose(f);
     return 1;
 }
 
-parti initialiser_score(char *nom_joueur){
-    char chemin[256], ligne[80];
-    parti joueur;
+parti initialisation_score(char *name_player){
+    char path[256], lines[80];
+    parti player;
     FILE *f;
 
-    joueur.score = 0;
-    joueur.score_max = 0;
+    player.score = 0;
+    player.score_max = 0;
 
-    strncpy(joueur.nom_joueur, nom_joueur, 10);
-    joueur.nom_joueur[10] = '\0';
+    strncpy(player.name_player, name_player, 10);
+    player.name_player[10] = '\0';
 
-    sprintf(chemin, "%s.txt", joueur.nom_joueur);
+    sprintf(path, "%s.txt", player.name_player);
     
-    f = fopen(chemin,"r");
+    f = fopen(path,"r");
     if (f){
-        if (fgets(ligne, sizeof(ligne), f) != NULL) {
-            joueur.score_max = atoi(ligne);
+        if (fgets(lines, sizeof(lines), f) != NULL) {
+            player.score_max = atoi(lines);
         }
         
         fclose(f);
     } else {
-        f = fopen(chemin, "w");
+        f = fopen(path, "w");
         if (f) {
             fprintf(f, "0\n0\n");
             fclose(f);
         } else {
-            fprintf(stderr, "Erreur : impossible de créer le fichier %s.txt\n", chemin);
+            fprintf(stderr, "Erreur : impossible de créer le fichier %s.txt\n", path);
         }  
     }
-    return joueur;
+    return player;
 }
 
-void sauvegarder_parti(parti joueur) {
-    char chemin[256];
+void save_parti(parti player) {
+    char path[256];
     FILE *f;
 
-    sprintf(chemin, "%s.txt", joueur.nom_joueur);
+    sprintf(path, "%s.txt", player.name_player);
 
-    f = fopen(chemin, "w");
+    f = fopen(path, "w");
     if (f) {
-        fprintf(f, "%d\n%d\n", joueur.score_max, joueur.score);
+        fprintf(f, "%d\n%d\n", player.score_max, player.score);
         fclose(f);
     } else {
-        fprintf(stderr, "Erreur : impossible d'ouvrir %s pour écriture\n", chemin);
+        fprintf(stderr, "Erreur : impossible d'ouvrir %s pour écriture\n", path);
     }
 }
 
-void afficher_score(){
-    parti joueur;
-    char nom_joueur[80];
+void display_score(){
+    parti player;
+    char name_player[80];
     printf("quel est votre nom de joueur ?");
-    if (scanf("%79s", nom_joueur) != 1) {
+    if (scanf("%79s", name_player) != 1) {
         fprintf(stderr, "Erreur de lecture du nom du joueur\n");
         exit(EXIT_FAILURE);
     }
-    joueur = initialiser_score(nom_joueur);
+    player = initialisation_score(name_player);
     
-    sauvegarder_parti(joueur);
+    save_parti(player);
     
-    printf("joueur : %s \nscore : %d \nmeilleur_score : %d\n",joueur.nom_joueur,joueur.score, joueur.score_max);
+    printf("joueur : %s \nscore : %d \nmeilleur_score : %d\n",player.name_player,player.score, player.score_max);
 }

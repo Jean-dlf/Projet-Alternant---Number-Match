@@ -6,7 +6,7 @@
 
 plateau *initialisation_plateau(int n, int m);
 
-cases *initialisation_cases(int x, int y, int valeur);
+cases *initialisation_cases(int x, int y, int value);
 
 plateau *initialisation_aleatoire(plateau *p);
 

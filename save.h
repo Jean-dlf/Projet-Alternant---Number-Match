@@ -1,14 +1,14 @@
 #ifndef _SAVE_H_
 #define _SAVE_H_
 
-int charger_save(char *nom, parti *jo, plateau **p);
+int load_save(char *nom, parti *jo, plateau **p);
 
-int save_parti(char *nom, parti *jo, plateau *p);
+int save_game(char *nom, parti *jo, plateau *p);
 
-parti initialiser_score(char *nom_joueur);
+parti initialisation_score(char *nom_joueur);
 
-void sauvegarder_parti(parti joueur);
+void save_parti(parti joueur);
 
-void afficher_score();
+void display_score();
 
 #endif

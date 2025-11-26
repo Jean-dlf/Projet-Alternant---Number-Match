@@ -46,18 +46,18 @@ plateau *initialisation_plateau(int n, int m){
             return NULL;
         }
 
-        /* Si tout a fonctionné alors on initialise chaque cases avec les coordonnées actuelles de i et j et avec une valeur de base à 0 */
+        /* Si tout a fonctionné alors on initialise chaque cases avec les coordonnées actuelles de i et j et avec une value de base à 0 */
         for(j = 0; j < m; j++){
             p->tab[i][j].x = i;
             p->tab[i][j].y = j;
-            p->tab[i][j].valeur = 0;
+            p->tab[i][j].value = 0;
         }
     }
     return p;
 }
 
 /* Initialisation du type cases */
-cases *initialisation_cases(int x, int y, int valeur){
+cases *initialisation_cases(int x, int y, int value){
     cases *c = NULL; /* Initialisation à vide */
 
     /* Allocation du type cases */
@@ -67,21 +67,21 @@ cases *initialisation_cases(int x, int y, int valeur){
         return NULL;
     }
 
-    /* Initialisation des coordonées et des valeurs de la case */
+    /* Initialisation des coordonées et des values de la case */
     c->x = x;
     c->y = y;
-    c->valeur = valeur;
+    c->value = value;
 
     return c;
 }
 
-/* Fonction pour mettre les 3 premières lignes du tableau avec des valeurs aléatoires */
+/* Fonction pour mettre les 3 premières lignes du tableau avec des values aléatoires */
 plateau *initialisation_aleatoire(plateau *p){
     int i, j;
 
     for(i = 0; i < 3; i++){
         for(j = 0; j < p->m; j++){
-            p->tab[i][j].valeur = rand() % (9 - 1 + 1) + 1; /* Rand permet de mettre des valeurs aléatoires et le reste permet de savoir l'intervalle (ici de 1 à 9) */
+            p->tab[i][j].value = rand() % (9 - 1 + 1) + 1; /* Rand permet de mettre des values aléatoires et le reste permet de savoir l'intervalle (ici de 1 à 9) */
         }
     }
 
