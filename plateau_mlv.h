@@ -3,6 +3,6 @@
 
 #include "types.h"
 
-void display_plateau_mlv(plateau *p);
+void display_plateau_mlv(plateau *p, button t_button_game[2]);
 
 #endif

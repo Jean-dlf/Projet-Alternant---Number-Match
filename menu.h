@@ -2,12 +2,15 @@
 #define _MENU_H_
 
 #include "types.h"
+#include <MLV/MLV_all.h>
 
 int verif(button button, int coord_x, int coord_y);
 
 int clic_button(button t_button[], int longueur);
 
 void create_button(button *button, char* message, int x, int y, MLV_Font *police);
+
+void display_text(button button , MLV_Font *police);
 
 void menu_p(button t_button_menu[5]);
 

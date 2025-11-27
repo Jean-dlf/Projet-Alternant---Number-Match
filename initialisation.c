@@ -76,7 +76,7 @@ cases *initialisation_cases(int x, int y, int value){
 }
 
 /* Fonction pour mettre les 3 premières lignes du tableau avec des values aléatoires */
-plateau *initialisation_aleatoire(plateau *p){
+plateau *random_initialisation(plateau *p){
     int i, j;
 
     for(i = 0; i < 3; i++){
@@ -86,4 +86,27 @@ plateau *initialisation_aleatoire(plateau *p){
     }
 
     return p;
+}
+
+/* Initialisation d'une l_cases */
+l_cases *initialisation_l_cases(cases *c1, cases *c2){
+    l_cases *l_c = NULL;
+
+    if((l_c = (l_cases*) malloc (sizeof(l_cases))) == NULL){
+        fprintf(stderr, "Erreur allocation de la structure l_cases\n");
+        return NULL;
+    };
+
+    l_c->n = 2;
+
+    if((l_c->c = (cases*) malloc (2 * sizeof(cases))) == NULL){
+        fprintf(stderr, "Erreur allocation du tableau de cases\n");
+        free(l_c);
+        return NULL;
+    }
+
+    l_c->c[0] = *c1;
+    l_c->c[1] = *c2;
+
+    return l_c;
 }

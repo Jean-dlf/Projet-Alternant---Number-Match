@@ -5,6 +5,10 @@
 
 void plateau_details(plateau *p, int *size, int *offset_x, int *offset_y, int *width, int *height);
 
-cases get_details(plateau *p);
+void wait_mouse_release();
+
+cases *get_details(plateau *p);
+
+cases *get_click_case(plateau *p);
 
 #endif

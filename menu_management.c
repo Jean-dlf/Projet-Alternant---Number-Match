@@ -30,7 +30,8 @@ void management(){
             case 0:
             printf("Jeu\n");
             /*afficher_plateau_mlv(p);*/
-            game(p, n, m, 1, NULL);
+            /*game_term(p, n, m, 1, NULL);*/
+            game_graphic(p, n, m);
             back_menu_p = 0;
             break;
 
@@ -48,7 +49,7 @@ void management(){
 
                     if(load_save(nom_save[pressed], &j, &p) == 1){
                         printf("Score chargé : %d\n", j.score);
-                        game(p, p->n, p->m, 0, &j);
+                        game_term(p, p->n, p->m, 0, &j);
                         back_menu_p = 0;
                     } else {
                         printf("Pas de sauvegarde\n");

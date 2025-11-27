@@ -30,7 +30,7 @@ void plateau_details(plateau *p, int *size, int *offset_x, int *offset_y, int *w
 /*** Foncitons utiles au bon fonctionnement du code MLV ***/
 
 /* Obtiens les coordonnées de là où clique le joueur */
-cases get_details(plateau *p){
+cases *get_details(plateau *p){
     int s_x, s_y, size, cw, ch, pw, ph;
     cases c;
 
@@ -39,13 +39,11 @@ cases get_details(plateau *p){
     plateau_details(p, &size, &cw, &ch, &pw, &ph);
 
     if(s_x < cw || s_x >= cw + pw || s_y < ch || s_y >= ch + ph){
-        c.x = -1;
-        c.y = -1;
-        return c;
+        return NULL;
     }
 
     c.y = (s_x - cw) / size;
     c.x = (s_y - ch) / size;
 
-    return c;
+    return &p->tab[c.x][c.y];
 }

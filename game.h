@@ -3,6 +3,8 @@
 
 #include "types.h"
 
-void game(plateau *p, int n, int m, int save, parti *player_s);
+void game_term(plateau *p, int n, int m, int save, parti *player_s);
+
+void game_graphic(plateau *p, int n, int m);
 
 #endif

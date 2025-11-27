@@ -3,6 +3,7 @@
 #include <time.h>
 #include <MLV/MLV_all.h>
 #include "types.h"
+#include "mlv.h"
 #include "game_logic.h"
 
 /* verifie si on clique sur un bouton */
@@ -39,7 +40,7 @@ void create_button(button *button, char* message, int x, int y, MLV_Font *police
 
 /* affiche le texte dun button */
 void display_text(button button , MLV_Font *police){
-    MLV_draw_adapted_text_box_with_font( button.x, button.y, button.txt, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER );
+    MLV_draw_adapted_text_box_with_font( button.x, button.y, button.txt, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 }
 
 /* display du menu principal */
@@ -59,11 +60,11 @@ void menu_p(button t_button_menu[5]){
   
     MLV_draw_adapted_text_box_with_font((LX - text_width) / 2, text_height / 3 - 25, "NUMBER MATCH", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
-    size_p = 100;
+    size_p = 150;
     police = MLV_load_font("./game_over.ttf", size_p);
 
     for(i = 0; i < 5; i++){
-        create_button(&t_button_menu[i], name_button[i], LX / 2, 150 + i * 100, police);
+        create_button(&t_button_menu[i], name_button[i], LX / 2, 150 + i * 120, police);
         display_text(t_button_menu[i], police);
     }
 

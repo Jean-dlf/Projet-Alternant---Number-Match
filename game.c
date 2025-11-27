@@ -6,9 +6,11 @@
 #include "plateau.h"
 #include "plateau_mlv.h"
 #include "save.h"
+#include "mlv.h"
+#include "menu.h"
 
-void game(plateau *p, int n, int m, int save, parti *player_s){
-    int *tab_vide = NULL;
+void game_term(plateau *p, int n, int m, int save, parti *player_s){
+    int *empty_tab = NULL;
     int size, pts, i, nb_ajt_lig, nb_ind_cpl, valid, loose_i;
     l_cases l_c;
     plateau *new_p;
@@ -36,7 +38,7 @@ void game(plateau *p, int n, int m, int save, parti *player_s){
         nb_ajt_lig = 3;
         nb_ind_cpl = 3;
 
-        initialisation_aleatoire(p);
+        random_initialisation(p);
     } else {
         printf("Partie chargée : %d x %d\n", p->n, p->m);
         player = *player_s;
@@ -45,7 +47,6 @@ void game(plateau *p, int n, int m, int save, parti *player_s){
     }
 
     display_plateau(p);
-    display_plateau_mlv(p);
 
     while(p->n != 0 && loose_i == 0){
         printf("oui ou non : ");
@@ -72,14 +73,14 @@ void game(plateau *p, int n, int m, int save, parti *player_s){
             player.score += pts;
             printf("+%d points ! Score actuel : %d\n", pts, player.score);
 
-            tab_vide = empty_lines(p, &size);
+            empty_tab = empty_lines(p, &size);
             if(size != 0){
-                delete_empty_lines(p, tab_vide, size);
+                delete_empty_lines(p, empty_tab, size);
             }
 
-            if(tab_vide != NULL){
-                free(tab_vide);
-                tab_vide = NULL;
+            if(empty_tab != NULL){
+                free(empty_tab);
+                empty_tab = NULL;
             }
         }
 
@@ -140,4 +141,89 @@ void game(plateau *p, int n, int m, int save, parti *player_s){
 
     printf("Vous avez gagné ! Score final : %d\n", player.score);
     return ;
+}
+
+
+/* Version graphique */
+void game_graphic(plateau *p, int n, int m, parti *player_s){
+    int pts, nb_ajt_lig, nb_ind_cpl, loose_i, size, pressed, bonus_used;
+    int *empty_tab = NULL;
+    button t_bouton_game[2];
+    plateau *new_p;
+    l_cases *l_c;
+    cases *c1 = NULL, *c2 = NULL;
+    parti player;
+
+    loose_i = 0;
+
+    p = initialisation_plateau(n, m);
+    nb_ajt_lig = 3;
+    nb_ind_cpl = 3;
+    random_initialisation(p);
+
+    display_plateau_mlv(p, t_bouton_game);
+
+    while(p->n != 0 && loose_i == 0){
+
+        pressed = clic_button(t_bouton_game, 2);
+        bonus_used = 0;
+
+        if(nb_ajt_lig > 0 && pressed == 0){
+            p = bonus_add_lines(p);
+            nb_ajt_lig -= 1;
+            bonus_used = 1;
+        } else if(nb_ind_cpl > 0 && pressed == 1){
+            bonus_clue(p);
+            nb_ind_cpl -= 1;
+            bonus_used = 1;
+        }
+
+        if(bonus_used){
+            display_plateau_mlv(p, t_bouton_game);
+        } else {
+
+            /* Récupération graphique des cases */
+            c1 = get_details(p);
+            printf("%d / %d / %d\n", c1->x, c1->y, c1->value);
+            c2 = get_details(p);
+            printf("%d / %d / %d\n", c2->x, c2->y, c2->value);
+
+            /* Vérification que les clics sont valides */
+            if(c1 != NULL && c2 != NULL && c1 != c2){
+
+                /* Création d'une structure l_cases dynamique */
+                l_c = initialisation_l_cases(c1, c2);
+
+                /* Vérification du match */
+                if(match(l_c, p)){
+                    reset(p, *l_c);
+
+                    /* Ajout des points */
+                    pts = points_for_match(l_c);
+                    player.score += pts;
+
+                    /* Suppression des lignes vides */
+                    empty_tab = empty_lines(p, &size);
+                    if(size != 0){
+                        delete_empty_lines(p, empty_tab, size);
+                    }
+
+                    if(empty_tab != NULL){
+                        free(empty_tab);
+                        empty_tab = NULL;
+                    }
+                }
+
+                /* Libération de la liste de cases */
+                free(l_c->c);
+                free(l_c);
+                display_plateau_mlv(p, t_bouton_game);
+            }
+        }
+
+        if(loose(p, nb_ajt_lig, nb_ind_cpl)){
+            printf("perdu\n");
+            return ;
+        }
+    }
 }

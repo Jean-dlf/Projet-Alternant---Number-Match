@@ -1,6 +1,3 @@
-
-/*jeu.c*/
-
 #include <stdlib.h>
 #include <stdio.h>
 #include "types.h"
@@ -803,7 +800,7 @@ int use_clue(plateau *p){
     return 0;
 }
 
-/* Défaite */
+/*** Défaite ***/
 int empty(plateau *p){
     int i, j;
     for(i = 0; i < p->n; i++){
