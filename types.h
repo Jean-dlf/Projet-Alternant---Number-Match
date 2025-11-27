@@ -8,6 +8,7 @@
 #define LY 800
 
 /* Une case du plateau */
+
 typedef struct{
     int x; /* Coordonnée x : ligne */
     int y; /* Coordonnée y : colonne */
@@ -19,6 +20,7 @@ typedef struct{
     cases **tab; /* Plateau de jeu (**tab ça correspond à un tableau à 2 entrées, ça revient à dire tab[][]) et le type cases veut dire que chaque cases du tableau est de type cases */
     int n; /* Longueur des lignes */
     int m; /* Longueur des colonnes */
+    int mode; /*mode de jeu*/
 } plateau;
 
 /* Type fait pour représenter une paire de cases; on mettra 2 cases différentes du tableau pour vérifier si les 2 choisies peuvent être matché */

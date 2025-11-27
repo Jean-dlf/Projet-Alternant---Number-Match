@@ -8,9 +8,12 @@
 
 void display_plateau_mlv(plateau *p, button t_button_game[2]){
     int size_p, text_width, text_height, i, j, x, y, size, cw, ch, pw, ph, gap;
+    int width_img, height_img;
     char text[10];
     char *name_button[2] = {"ADD LINES", "CLUE"};
     MLV_Font *police;
+    MLV_Image *image[1];
+
 
     MLV_clear_window(MLV_COLOR_BEIGE);
 
@@ -22,23 +25,41 @@ void display_plateau_mlv(plateau *p, button t_button_game[2]){
 
     plateau_details(p, &size, &cw, &ch, &pw, &ph);
 
-    for(i = 0; i < p->n; i++){
-        for(j = 0; j < p->m; j++){
-            x = cw + j * size;
-            y = ch + i * size;
+    if(p->mode == 0){
+        for(i = 0; i < p->n; i++){
+            for(j = 0; j < p->m; j++){
+                x = cw + j * size;
+                y = ch + i * size;
+                
+                MLV_draw_rectangle(x, y, size, size, MLV_COLOR_BLACK);
+                
+                sprintf(text, "%d", p->tab[i][j].value);
+                size_p = size;
+                police = MLV_load_font("./game_over.ttf", size_p);
 
-            MLV_draw_rectangle(x, y, size, size, MLV_COLOR_BLACK);
-
-            sprintf(text, "%d", p->tab[i][j].value);
-            size_p = size;
-            police = MLV_load_font("./game_over.ttf", size_p);
-
-            MLV_draw_text_box_with_font(x, y, size, size, text, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER, MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
-
-            MLV_free_font(police);
+                MLV_draw_text_box_with_font(x, y, size, size, text, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER, MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
+                
+                MLV_free_font(police);
+            }
+        }
+    }else if(p->mode == 1){
+        for(i = 0; i < p->n; i++){
+            for(j = 0; j < p->m; j++){
+                x = cw + j * size;
+                y = ch + i * size;
+                
+                MLV_draw_rectangle(x, y, size, size, MLV_COLOR_BLACK);
+                
+                sprintf(text, "./%d.png", p->tab[i][j].value);
+               
+                image[0] = MLV_load_image(text);
+                MLV_resize_image_with_proportions(image[0], size-10, size-10);
+                MLV_get_image_size(image[0], &width_img, &height_img);
+                MLV_draw_image(image[0], x+10, y+5);
+                MLV_free_image(image[0]);
+            }  
         }
     }
-
     /* Bouton Bonus */
     size_p = 100;
     police = MLV_load_font("./game_over.ttf", size_p);

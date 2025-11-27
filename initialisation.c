@@ -53,6 +53,7 @@ plateau *initialisation_plateau(int n, int m){
             p->tab[i][j].value = 0;
         }
     }
+    p->mode = 1;
     return p;
 }
 

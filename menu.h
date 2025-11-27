@@ -16,6 +16,8 @@ void menu_p(button t_button_menu[5]);
 
 void menu_save(button t_button_save[5]);
 
+void menu_mode(button t_button_menu[3]);
+
 void menu_rules(button *back);
 
 void menu_score(button *back);

@@ -13,7 +13,7 @@
 void management(){
     plateau *p = NULL;
     int n = 10, m = 10;
-    button t_menu_p[5], t_menu_s[5], back;
+    button t_menu_p[6], t_menu_s[5], t_menu_m[3], back;
     char *nom_save[4] = {"save1.txt", "save2.txt", "save3.txt", "save4.txt"};
     int pressed;
     int back_menu_p = 1;
@@ -23,26 +23,26 @@ void management(){
 
     while(back_menu_p == 1){
         menu_p(t_menu_p);
-        pressed = clic_button(t_menu_p, 5);
+        pressed = clic_button(t_menu_p, 6);
         switch(pressed){
             
             /* Lancement du jeu */
-            case 0:
+        case 0:
             printf("Jeu\n");
             /*afficher_plateau_mlv(p);*/
             /*game_term(p, n, m, 1, NULL);*/
             game_graphic(p, n, m);
             back_menu_p = 0;
             break;
-
+            
             /* Menu sauvegarde */
-            case 1:
+        case 1:
             printf("Menu sauvegarde\n");
             menu_save(t_menu_s);
-
+            
             while(back_menu_p == 1){
                 pressed = clic_button(t_menu_s, 5);
-
+                
                 if(pressed < 4){
                     printf("Save %s\n", nom_save[pressed]);
 
@@ -63,7 +63,7 @@ void management(){
             break;
 
             /* Menu règles */
-            case 2:
+        case 2:
             printf("Menu règles\n");
             menu_rules(&back);
             pressed = clic_button(&back, 1);
@@ -74,7 +74,7 @@ void management(){
             break;
 
             /* Menu score */
-            case 3:
+        case 3:
             printf("Menu score\n");
             menu_score(&back);
             pressed = clic_button(&back, 1);
@@ -84,8 +84,19 @@ void management(){
             }
             break;
 
+            /* Menu mode */
+        case 4 :
+            printf("Menu mode\n");
+            menu_mode(t_menu_m);
+            pressed = clic_button(&back, 1);
+            if(pressed == 0){
+                printf("Menu Principal\n");
+                back_menu_p = 0;
+            }
+            break;
+
             /* Exit lors du menu */
-            case 4:
+        case 5:
             printf("Au revoir\n");
             return ;
         }

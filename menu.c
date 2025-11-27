@@ -44,8 +44,8 @@ void display_text(button button , MLV_Font *police){
 }
 
 /* display du menu principal */
-void menu_p(button t_button_menu[5]){
-    char *name_button[5] = {"START", "SAVE", "RULES", "SCORE", "EXIT"}; 
+void menu_p(button t_button_menu[6]){
+    char *name_button[6] = {"START", "SAVE", "RULES", "SCORE", "MODE", "EXIT"}; 
     int text_width, text_height, i, size_p;
     MLV_Font *police;
 
@@ -60,11 +60,11 @@ void menu_p(button t_button_menu[5]){
   
     MLV_draw_adapted_text_box_with_font((LX - text_width) / 2, text_height / 3 - 25, "NUMBER MATCH", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
-    size_p = 150;
+    size_p = 120;
     police = MLV_load_font("./game_over.ttf", size_p);
 
-    for(i = 0; i < 5; i++){
-        create_button(&t_button_menu[i], name_button[i], LX / 2, 150 + i * 120, police);
+    for(i = 0; i < 6; i++){
+        create_button(&t_button_menu[i], name_button[i], LX / 2, 120 + i * 110, police);
         display_text(t_button_menu[i], police);
     }
 
@@ -99,14 +99,59 @@ void menu_save(button t_button_save[5]){
     MLV_actualise_window();
 }
 
-void menu_rules(button *back){
+void menu_mode(button t_button_mode[3]){
+    char *name_button_mode[3] = {"NORMAL", "SERRURIER", "BACK"};
+    int text_width, text_height, i, size_p;
+    int width_img, height_img, x;
+    MLV_Font *police;
+    MLV_Image *image[1];
+    char *name_image[1] = {"./cadena_icone_mode_jeu.png"};
+        
+    MLV_clear_window(MLV_COLOR_BEIGE);
+
+    size_p = 180;
+    police = MLV_load_font("./game_over.ttf", size_p);
+
+    /* Titre */
+    MLV_get_size_of_adapted_text_box_with_font("MODE DE JEU", police, 10, &text_width, &text_height);
+    MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, text_height / 3 - 25, "MODE DE JEU", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+
+    size_p = 150;
+    police = MLV_load_font("./game_over.ttf", size_p);
+    
+    /* button mode */
+    for(i = 0; i < 3; i++){
+        create_button(&t_button_mode[i], name_button_mode[i], LX / 2, 150 + i * 100, police);
+        display_text(t_button_mode[i], police);
+    }
+
+    x = LX / 2;
+
+    image[0] = MLV_load_image(name_image[0]);
+    MLV_resize_image_with_proportions(image[0], 60, 60);
+    MLV_get_image_size(image[0], &width_img, &height_img);
+    MLV_draw_image(image[0], x - 215, LY - 525);
+    MLV_free_image(image[0]);
+
+    image[0] = MLV_load_image(name_image[0]);
+    MLV_resize_image_with_proportions(image[0], 60, 60);
+    MLV_get_image_size(image[0], &width_img, &height_img);
+    MLV_draw_image(image[0], x + 180, LY - 525);
+    MLV_free_image(image[0]);
+    
+
+    MLV_free_font(police);
+    MLV_actualise_window();
+}
+
+void menu_rules(button *back, mode){
     char display[500];
     char *name_button_back[1] = {"BACK"};
     int text_width, text_height, width_img, height_img, x, size_p;
     MLV_Font *police;
     MLV_Image *image[1];
     char *name_image[1] = {"./number_match.png"};
-
+    
     MLV_clear_window(MLV_COLOR_BEIGE);
 
     size_p = 180;
@@ -120,28 +165,30 @@ void menu_rules(button *back){
     size_p = 60;
     police = MLV_load_font("./game_over.ttf", size_p);
 
-    sprintf(display, "VOTRE OBJECTIF : VIDER LE PLATEAU DE JEU\nPOUR CELA VOUS DEVEZ TROUVER DES PAIRES DE CHIFFRES IDENTIQUES\nLES PAIRES PEUVENT ETRE :\n -HORIZONTALES --- (FLECHE ROUGE)\n-VERTICALES --- (FLECHE ORANGE)\n-EN DIAGONALE --- (FLECHE VIOLETTE)\n-OU UN CHIFFRE EN FIN DE LIGNE ET L'AUTRE AU DEBUT DE LA SUIVANTE\n --- (FLECHE BLEUE)\n");
-    MLV_get_size_of_adapted_text_box_with_font(display, police, 10, &text_width, &text_height);
-    MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, text_height / 3, display, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+    if(mode == 0){
+        sprintf(display, "VOTRE OBJECTIF : VIDER LE PLATEAU DE JEU\nPOUR CELA VOUS DEVEZ TROUVER DES PAIRES DE CHIFFRES IDENTIQUES\nLES PAIRES PEUVENT ETRE :\n -HORIZONTALES --- (FLECHE ROUGE)\n-VERTICALES --- (FLECHE ORANGE)\n-EN DIAGONALE --- (FLECHE VIOLETTE)\n-OU UN CHIFFRE EN FIN DE LIGNE ET L'AUTRE AU DEBUT DE LA SUIVANTE\n --- (FLECHE BLEUE)\n");
+        MLV_get_size_of_adapted_text_box_with_font(display, police, 10, &text_width, &text_height);
+        MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, text_height / 3, display, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+        
+        /* button back */
+        size_p = 80;
+        police = MLV_load_font("./game_over.ttf", size_p);
+        
+        create_button(back, name_button_back[0], 60, 1, police);
+        display_text(*back, police);
+        
+        /* Image */
+        x = LX / 2;
 
-    /* button back */
-    size_p = 80;
-    police = MLV_load_font("./game_over.ttf", size_p);
-
-    create_button(back, name_button_back[0], 60, 1, police);
-    display_text(*back, police);
-
-    /* Image */
-    x = LX / 2;
-
-    image[0] = MLV_load_image(name_image[0]);
-    MLV_resize_image_with_proportions(image[0], 300, 300);
-    MLV_get_image_size(image[0], &width_img, &height_img);
-    MLV_draw_image(image[0], x - (width_img / 2), LY - height_img - 25);
-    MLV_free_image(image[0]);
-
-    MLV_free_font(police);
-    MLV_actualise_window();
+        image[0] = MLV_load_image(name_image[0]);
+        MLV_resize_image_with_proportions(image[0], 300, 300);
+        MLV_get_image_size(image[0], &width_img, &height_img);
+        MLV_draw_image(image[0], x - (width_img / 2), LY - height_img - 25);
+        MLV_free_image(image[0]);
+        
+        MLV_free_font(police);
+        MLV_actualise_window();
+    }
 }
 
 void menu_score(button *back) {
