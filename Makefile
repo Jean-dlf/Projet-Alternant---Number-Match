@@ -1,51 +1,36 @@
+# Options de compilation
 CC = gcc
 OPTION = -W -Wall -pedantic -std=c89 -O2
+
+# Dossiers pour les fichiers .c et .o
 OBJECTS = ./Objects/
 SOURCE = ./Source/
+
+# Nom de l'exécutable
 EXEC = match
 
+# Liste des fichiers objets
 OBJ = $(OBJECTS)main.o $(OBJECTS)initialisation.o $(OBJECTS)plateau.o $(OBJECTS)game_logic.o $(OBJECTS)game.o $(OBJECTS)menu.o $(OBJECTS)menu_management.o $(OBJECTS)save.o $(OBJECTS)plateau_mlv.o $(OBJECTS)mlv.o
 
+# Ce qui va être exécuté lors du make
 all: clearscreen $(EXEC)
 
+# Compilation de l'exécutable avec les fichiers objets
 $(EXEC): $(OBJ)
 	$(CC) $(OPTION) `pkg-config --cflags MLV` `pkg-config --libs-only-other --libs-only-L MLV` $^ `pkg-config --libs-only-l MLV` -o $@
 
+# Création du dossier Objetcs
 $(OBJECTS):
 	mkdir -p $(OBJECTS)
 
-$(OBJECTS)main.o: $(SOURCE)main.c | $(OBJECTS)
+# Compilation de tous les fichiers .c en .o dans le fichier Objects
+$(OBJECTS)%.o: $(SOURCE)%.c | $(OBJECTS)
 	$(CC) $(OPTION) $^ -c -o $@
 
-$(OBJECTS)initialisation.o: $(SOURCE)initialisation.c | $(OBJECTS)
-	$(CC) $(OPTION) $^ -c -o $@
-
-$(OBJECTS)plateau.o: $(SOURCE)plateau.c | $(OBJECTS)
-	$(CC) $(OPTION) $^ -c -o $@
-
-$(OBJECTS)game_logic.o: $(SOURCE)game_logic.c | $(OBJECTS)
-	$(CC) $(OPTION) $^ -c -o $@
-
-$(OBJECTS)game.o: $(SOURCE)game.c | $(OBJECTS)
-	$(CC) $(OPTION) $^ -c -o $@
-
-$(OBJECTS)menu.o: $(SOURCE)menu.c | $(OBJECTS)
-	$(CC) $(OPTION) $^ -c -o $@
-
-$(OBJECTS)menu_management.o: $(SOURCE)menu_management.c | $(OBJECTS)
-	$(CC) $(OPTION) $^ -c -o $@
-
-$(OBJECTS)save.o: $(SOURCE)save.c | $(OBJECTS)
-	$(CC) $(OPTION) $^ -c -o $@
-
-$(OBJECTS)plateau_mlv.o: $(SOURCE)plateau_mlv.c | $(OBJECTS)
-	$(CC) $(OPTION) `pkg-config --cflags MLV` $^ -c -o $@
-
-$(OBJECTS)mlv.o: $(SOURCE)mlv.c | $(OBJECTS)
-	$(CC) $(OPTION) `pkg-config --cflags MLV` $^ -c -o $@
-
+# optionnel mais permet de clear la page lors d'un make
 clearscreen:
 	clear
 
+# Nettoie tous les fichiers .o et l'exécutable
 clean:
 	rm -rf $(OBJECTS) *~ $(EXEC)
