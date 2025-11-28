@@ -1,43 +1,51 @@
 CC = gcc
 OPTION = -W -Wall -pedantic -std=c89 -O2
+OBJECTS = ./Objects/
+SOURCE = ./Source/
+EXEC = match
 
-all: clean clearscreen match
+OBJ = $(OBJECTS)main.o $(OBJECTS)initialisation.o $(OBJECTS)plateau.o $(OBJECTS)game_logic.o $(OBJECTS)game.o $(OBJECTS)menu.o $(OBJECTS)menu_management.o $(OBJECTS)save.o $(OBJECTS)plateau_mlv.o $(OBJECTS)mlv.o
 
-match: main.o initialisation.o plateau.o game_logic.o game.o menu.o menu_management.o save.o plateau_mlv.o mlv.o
-	$(CC) $(OPTION) `pkg-config --cflags MLV` `pkg-config --libs-only-other --libs-only-L MLV` main.o initialisation.o plateau.o game_logic.o game.o menu.o menu_management.o save.o plateau_mlv.o mlv.o `pkg-config --libs-only-l MLV` -o match
+all: clearscreen $(EXEC)
 
-main.o: main.c initialisation.h plateau.h game_logic.h game.h menu.h menu_management.h save.h plateau_mlv.h mlv.h
-	$(CC) $(OPTION) main.c -c
+$(EXEC): $(OBJ)
+	$(CC) $(OPTION) `pkg-config --cflags MLV` `pkg-config --libs-only-other --libs-only-L MLV` $^ `pkg-config --libs-only-l MLV` -o $@
 
-initialisation.o: initialisation.c initialisation.h
-	$(CC) $(OPTION) initialisation.c -c
+$(OBJECTS):
+	mkdir -p $(OBJECTS)
 
-plateau.o: plateau.c plateau.h
-	$(CC) $(OPTION) plateau.c -c
+$(OBJECTS)main.o: $(SOURCE)main.c | $(OBJECTS)
+	$(CC) $(OPTION) $^ -c -o $@
 
-game_logic.o: game_logic.c game_logic.h
-	$(CC) $(OPTION) game_logic.c -c
+$(OBJECTS)initialisation.o: $(SOURCE)initialisation.c | $(OBJECTS)
+	$(CC) $(OPTION) $^ -c -o $@
 
-game.o: game.c game.h
-	$(CC) $(OPTION) game.c -c
+$(OBJECTS)plateau.o: $(SOURCE)plateau.c | $(OBJECTS)
+	$(CC) $(OPTION) $^ -c -o $@
 
-menu.o: menu.c menu.h
-	$(CC) $(OPTION) menu.c -c
+$(OBJECTS)game_logic.o: $(SOURCE)game_logic.c | $(OBJECTS)
+	$(CC) $(OPTION) $^ -c -o $@
 
-menu_management:o menu_management.c menu_management.h
-	$(CC) $(OPTION) menu_management.c -c
+$(OBJECTS)game.o: $(SOURCE)game.c | $(OBJECTS)
+	$(CC) $(OPTION) $^ -c -o $@
 
-save.o: save.c save.h
-	$(CC) $(OPTION) save.c -c
+$(OBJECTS)menu.o: $(SOURCE)menu.c | $(OBJECTS)
+	$(CC) $(OPTION) $^ -c -o $@
 
-plateau_mlv.o: plateau_mlv.c plateau_mlv.h
-	$(CC) $(OPTION) plateau_mlv.c -c
+$(OBJECTS)menu_management.o: $(SOURCE)menu_management.c | $(OBJECTS)
+	$(CC) $(OPTION) $^ -c -o $@
 
-mlv.o: mlv.c mlv.h
-	$(CC) $(OPTION) mlv.c -c
+$(OBJECTS)save.o: $(SOURCE)save.c | $(OBJECTS)
+	$(CC) $(OPTION) $^ -c -o $@
+
+$(OBJECTS)plateau_mlv.o: $(SOURCE)plateau_mlv.c | $(OBJECTS)
+	$(CC) $(OPTION) `pkg-config --cflags MLV` $^ -c -o $@
+
+$(OBJECTS)mlv.o: $(SOURCE)mlv.c | $(OBJECTS)
+	$(CC) $(OPTION) `pkg-config --cflags MLV` $^ -c -o $@
 
 clearscreen:
 	clear
 
 clean:
-	rm -rf *.o *~ match
+	rm -rf $(OBJECTS) *~ $(EXEC)
