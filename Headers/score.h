@@ -9,4 +9,6 @@ int collect_score(char *name_f, tparti t_player);
 
 int change_player_score(parti *plyr1, parti *plyr2);
 
+int tri_insertion(char *name_f, parti new_score, tparti t_player);
+
 #endif

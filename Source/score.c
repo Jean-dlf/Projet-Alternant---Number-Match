@@ -91,25 +91,35 @@ int change_player_score(parti *plyr1, parti *plyr2){
     return 1;
 }
 
-/* int tri_insertion(char *name_f, parti new_score, tparti t_player){ */
-/*     FILE *FILE; */
-/*     int i, j; */
+int tri_insertion(char *name_f, parti new_score, tparti t_player){
+    FILE *f;
+    int i, j;
 
-/*     for(i = 0; i < 10; i++){ */
-/*         if(new_score.score_max > t_player[i].score_max){ */
-/*             for(j = 9; j > i; j--){ */
-/*                 if(change_player_score(&t_player[i + 1], &t_player[i]) == -1){ */
-/*                     fprintf(stderr, "Erreur lors du déplacement de score\n"); */
-/*                     return -1; */
-/*                 } */
-/*             } */
+    if((f = fopen(name_f, "w")) == NULL){
+        fprintf(stderr, "Erreur lors de l'ouverture du fichier f\n");
+        return -1;
+    }
 
-/*             if(change_player_score(&t_player[i], &new_score) == -1){ */
-/*                 fprintf(stderr, "Erreur lors du déplacement de score\n"); */
-/*                 return -1; */
-/*             } */
-/*         } */
-/*     } */
+    for(i = 0; i < 10; i++){
+        if(new_score.score_max > t_player[i].score_max){
+            for(j = 9; j > i; j--){
+                if(change_player_score(&t_player[i + 1], &t_player[i]) == -1){
+                    fprintf(stderr, "Erreur lors du déplacement de score\n");
+                    return -1;
+                }
+            }
 
-/*     for(i = 0; i < LENGTH_TP; i++){ */
-/* } */
+            if(change_player_score(&t_player[i], &new_score) == -1){
+                fprintf(stderr, "Erreur lors du déplacement de score\n");
+                return -1;
+            }
+        }
+    }
+
+    for(i = 0; i < LENGTH_TP; i++){
+        fprintf(f, "%s %d\n", t_player[i].name_player, t_player->score);
+    }
+
+    fclose(f);
+    return 1;
+}

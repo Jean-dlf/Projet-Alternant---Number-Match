@@ -7,6 +7,7 @@
 #include "../Headers/mlv.h"
 #include "../Headers/save.h"
 #include "../Headers/game_logic.h"
+#include "../Headers/score.h"
 
 /* verifie si on clique sur un bouton */
 int verif(button button, int coord_x, int coord_y){
@@ -234,7 +235,7 @@ void menu_score(button *back) {
     char *name_button_score[10] = {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"};
     char display[200];
     char *name_button_back[1] = {"BACK"};
-    /*tparti t_score;*/
+    tparti t_player;
     int text_width, text_height, i, k, size_p;
     MLV_Font *police;
     MLV_Color color;
@@ -251,6 +252,13 @@ void menu_score(button *back) {
     size_p = 80;
     police = MLV_load_font("./Font/game_over.ttf", size_p);
     k = 0;
+
+    
+    if(collect_score("./Save/score.txt", t_player) == -1){
+        fprintf(stderr, "Erreur lors de la récupération des scores\n");
+        return ;
+    }
+
 
     for(i = 0; i < 10; i++) {
         switch(i){
@@ -273,7 +281,7 @@ void menu_score(button *back) {
             color = MLV_COLOR_BLACK;
             break;
         }
-        sprintf(display, "%s --   Score = %d   |   Pseudo = %s   |   Timer = ", name_button_score[i], 80, "Oui" /* t_score[i].score, t_score[i].nom_joueur */);
+        sprintf(display, "%s --   Score = %d   |   Pseudo = %s", name_button_score[i], t_player[i].score, t_player[i].name_player);
         MLV_get_size_of_adapted_text_box_with_font(display, police, 10, &text_width, &text_height);
         MLV_draw_adapted_text_box_with_font(30, text_height / 3 + 100 + k, display, police, 10, MLV_ALPHA_TRANSPARENT, color, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
         k += 60;
