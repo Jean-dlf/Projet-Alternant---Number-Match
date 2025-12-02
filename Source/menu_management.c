@@ -14,7 +14,7 @@ void management(){
     plateau *p = NULL;
     int n = 10, m = 10;
     button t_menu_p[5], t_menu_s[5], back;
-    char *nom_save[4] = {"save1.txt", "save2.txt", "save3.txt", "save4.txt"};
+    char *nom_save[4] = {"./Save/save1.txt", "./Save/save2.txt", "./Save/save3.txt", "./Save/save4.txt"};
     int pressed, mx, my, c_save, mode_game;
     parti plyr;
     

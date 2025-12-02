@@ -165,6 +165,8 @@ void game_graphic(plateau *p, int n, int m, parti *player_s, int mode){
         player.score = 0;
         nb_ajt_lig = 3;
         nb_ind_cpl = 3;
+
+        ask_name(&player);
     }
 
     display_plateau_mlv(p, t_bouton_game);

@@ -6,6 +6,7 @@
 
 #define LX 900
 #define LY 800
+#define LENGTH_TP 10
 
 /* Une case du plateau */
 typedef struct{
@@ -44,7 +45,7 @@ typedef struct{
     int bonus_add_lines;
     int bonus_clue;
 } parti;
-typedef parti tparti[11];
+typedef parti tparti[LENGTH_TP];
 
 /* Menu */
 #define L 100

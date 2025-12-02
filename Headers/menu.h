@@ -34,4 +34,8 @@ void save_pause_management(parti *plyr, plateau *p , int pressed);
 
 int pause_game(parti *plyr, plateau *p);
 
+void display_text_box(char *message);
+
+void ask_name(parti *p);
+
 #endif

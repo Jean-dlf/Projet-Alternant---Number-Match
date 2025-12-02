@@ -10,10 +10,10 @@ SOURCE = ./Source/
 EXEC = match
 
 # Liste des fichiers objets
-OBJ = $(OBJECTS)main.o $(OBJECTS)initialisation.o $(OBJECTS)plateau.o $(OBJECTS)game_logic.o $(OBJECTS)game.o $(OBJECTS)menu.o $(OBJECTS)menu_management.o $(OBJECTS)save.o $(OBJECTS)plateau_mlv.o $(OBJECTS)mlv.o
+OBJ = $(OBJECTS)main.o $(OBJECTS)initialisation.o $(OBJECTS)plateau.o $(OBJECTS)game_logic.o $(OBJECTS)game.o $(OBJECTS)menu.o $(OBJECTS)menu_management.o $(OBJECTS)save.o $(OBJECTS)plateau_mlv.o $(OBJECTS)mlv.o $(OBJECTS)score.o
 
 # Ce qui va être exécuté lors du make
-all: clearscreen $(EXEC)
+all: clean clearscreen $(EXEC)
 
 # Compilation de l'exécutable avec les fichiers objets
 $(EXEC): $(OBJ)

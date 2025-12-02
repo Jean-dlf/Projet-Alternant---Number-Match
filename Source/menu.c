@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <string.h>
 #include <MLV/MLV_all.h>
 #include "../Headers/types.h"
 #include "../Headers/mlv.h"
@@ -339,7 +340,7 @@ int crushing_save(){
 }
 
 void save_pause_management(parti *plyr, plateau *p, int pressed){
-    char *name_save[4] = {"./save1.txt", "./save2.txt", "./save3.txt", "./save4.txt"};
+    char *name_save[4] = {"./Save/save1.txt", "./Save/save2.txt", "./Save/save3.txt", "./Save/save4.txt"};
     int crushed;
     FILE *f;
 
@@ -409,4 +410,55 @@ int pause_game(parti *plyr, plateau *p){
         }
     }
     return 1;
+}
+
+/* Fonction qui affiche une boite de dialogue */
+void display_text_box(char *message){
+    int text_w, text_h, text_x, text_y, size_p;
+    MLV_Font *police;
+
+    size_p = 80;
+    police = MLV_load_font("./Font/game_over.ttf", size_p);
+    MLV_get_size_of_adapted_text_box_with_font(message, police, 10, &text_w, &text_h);
+    
+    text_x = (LX - text_w) / 2;
+    text_y = (LY - text_h - 100) / 3;
+  
+    MLV_draw_adapted_text_box_with_font(text_x, text_y, message, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+  
+    MLV_actualise_window();
+    MLV_free_font(police);
+}
+
+void ask_name(parti *p){
+    int valide, size_p, marge;
+    MLV_Font *police;
+    char mess_err[50];
+    char *tmp = NULL;
+
+    MLV_clear_window(MLV_COLOR_BEIGE);
+
+    size_p = 100;
+    police = MLV_load_font("./Font/game_over.ttf", size_p);
+
+    valide = 1;
+
+    marge = 50;
+    
+    while(valide){
+        MLV_wait_input_box_with_font(marge, LY / 3, LX - (marge * 2), LY / 3, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_COLOR_BEIGE, "Enter your name :", &tmp, police);
+
+        if(strlen(tmp) > 10){
+            sprintf(mess_err, "You cannot have a name longer than 10 caracters");
+              display_text_box(mess_err);
+        } else {
+            strcpy(p->name_player, tmp);
+            valide = 0;
+        }
+
+        free(tmp);
+        tmp = NULL;
+    }
+
+    MLV_free_font(police);
 }
