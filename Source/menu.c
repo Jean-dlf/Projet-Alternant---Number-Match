@@ -46,8 +46,8 @@ void display_text(button button , MLV_Font *police){
 }
 
 /* display du menu principal */
-void menu_p(button t_button_menu[5]){
-    char *name_button[5] = {"START", "SAVE", "RULES", "SCORE", "EXIT"}; 
+void menu_p(button t_button_menu[4]){
+    char *name_button[4] = {"START", "SAVE", "SCORE", "EXIT"}; 
     int text_width, text_height, i, size_p;
     MLV_Font *police;
 
@@ -63,7 +63,7 @@ void menu_p(button t_button_menu[5]){
     size_p = 150;
     police = MLV_load_font("./Font/game_over.ttf", size_p);
 
-    for(i = 0; i < 5; i++){
+    for(i = 0; i < 4; i++){
         create_button(&t_button_menu[i], name_button[i], LX / 2, 150 + i * 120, police);
         display_text(t_button_menu[i], police);
     }
@@ -185,9 +185,9 @@ int choice_mode_game(){
     return pressed;
 }
 
-void menu_rules(button *back){
+void menu_rules_classic(button *back){
     char display[500];
-    char *name_button_back[1] = {"BACK"};
+    char *name_button_back[1] = {"CONTINUE"};
     int text_width, text_height, width_img, height_img, x, size_p;
     MLV_Font *police;
     MLV_Image *image[1];
@@ -214,7 +214,7 @@ void menu_rules(button *back){
     size_p = 80;
     police = MLV_load_font("./Font/game_over.ttf", size_p);
 
-    create_button(back, name_button_back[0], 60, 1, police);
+    create_button(back, name_button_back[0], 810, 715, police);
     display_text(*back, police);
 
     /* Image */
@@ -230,8 +230,53 @@ void menu_rules(button *back){
     MLV_actualise_window();
 }
 
+void menu_rules_locksmith(button *back){
+    char display[500];
+    char *name_button_back[1] = {"CONTINUE"};
+    int text_width, text_height, width_img, height_img, x, size_p;
+    MLV_Font *police;
+    MLV_Image *image[1];
+    char *name_image[1] = {"./Assets/locksmith_rules.png"};
+
+    MLV_clear_window(MLV_COLOR_BEIGE);
+
+    size_p = 180;
+    police = MLV_load_font("./Font/game_over.ttf", size_p);
+
+    /* Titre */
+    MLV_get_size_of_adapted_text_box_with_font("RULES", police, 5, &text_width, &text_height);
+    MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, text_height / 3 - 25, "RULES", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+
+    /* Texte */
+    size_p = 60;
+    police = MLV_load_font("./Font/game_over.ttf", size_p);
+
+    sprintf(display, "VOTRE OBJECTIF : VIDER LE PLATEAU DE JEU \n\nPOUR CELA VOUS DEVEZ ASSOCIER : \nDES PAIRES DE CADENAS IDENTIQUES\nOU \nDES PAIRES CLÉ + CADENAS CORRESPONDANT \nLES PAIRES PEUVENT ETRE : \nHORIZONTALES — (FLECHE ROUGE) \nVERTICALES — (FLECHE ORANGE) \nEN DIAGONALE — (FLECHE VIOLETTE) \nOU FIN DE LIGNE -> DEBUT DE LA SUIVANTE — (FLECHE BLEUE) \nLE CADENAS JOKER PEUT SEUL S’ASSOCIER AVEC UN AUTRE JOKER \n- (FLECHE JAUNE)");
+    MLV_get_size_of_adapted_text_box_with_font(display, police, 10, &text_width, &text_height);
+    MLV_draw_adapted_text_box_with_font( (LX - text_width) / 6, text_height / 4, display, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_LEFT);
+
+    /* button back */
+    size_p = 80;
+    police = MLV_load_font("./Font/game_over.ttf", size_p);
+
+    create_button(back, name_button_back[0], 810, 715, police);
+    display_text(*back, police);
+
+    /* Image */
+    x = LX / 2;
+
+    image[0] = MLV_load_image(name_image[0]);
+    MLV_resize_image_with_proportions(image[0], 380, 380);
+    MLV_get_image_size(image[0], &width_img, &height_img);
+    MLV_draw_image(image[0], x + (width_img) - 130, LY - height_img - 250);
+    MLV_free_image(image[0]);
+
+    MLV_free_font(police);
+    MLV_actualise_window();
+}
+
 void menu_ask_difficulty(button t_button_level[5]){
-    char *name_button[5] = {"6 X 6", "8 X 8", "6 X 10", "8 X 6", "Back"};
+    char *name_button[5] = {"6 X 6", "8 X 8", "6 X 10", "8 X 6", "BACK"};
     int text_width, text_height, i, size_p;
     MLV_Font *police;
 

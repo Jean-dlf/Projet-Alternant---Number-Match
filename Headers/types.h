@@ -13,6 +13,7 @@ typedef struct{
     int x; /* Coordonnée x : ligne */
     int y; /* Coordonnée y : colonne */
     int value; /* Valeur de la case */
+    int select; /* case selectionner : 1, sinon 0*/
 } cases;
 
 /* Type plateau de jeu (qui contient toutes les cases) */

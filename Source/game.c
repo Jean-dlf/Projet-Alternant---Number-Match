@@ -206,10 +206,16 @@ int game_graphic(plateau *p, int n, int m, parti *player_s, int mode){
             c1 = get_details(p, mx, my);
 
             if(c1 != NULL){
+                c1->select = 1;
+                display_plateau_mlv(p, t_bouton_game);
+                MLV_actualise_window();
                 MLV_wait_mouse(&mx, &my);
                 c2 = get_details(p, mx, my);
 
                 if(c2 != NULL && c1 != c2){
+                    c1->select = 2;
+                    display_plateau_mlv(p, t_bouton_game);
+                    MLV_actualise_window();
                     l_c = initialisation_l_cases(c1, c2);
                     if(l_c){
                         if(match(l_c, p)){

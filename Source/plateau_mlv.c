@@ -17,7 +17,7 @@ void display_plateau_mlv(plateau *p, button t_button_game[3]){
     MLV_clear_window(MLV_rgba(115, 146, 183, 255));
 
     size_p = 100;
-    police = MLV_load_font("./Font/game_over.ttf", size_p);
+    police = MLV_load_font("./Font/Crang.ttf", size_p);
 
     /*MLV_get_size_of_adapted_text_box_with_font("NUMBER MATCH", police, 10, &text_width, &text_height);
     MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, 25, "NUMBER MATCH", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);*/
@@ -27,7 +27,7 @@ void display_plateau_mlv(plateau *p, button t_button_game[3]){
     plateau_details(p, &size, &cw, &ch, &pw, &ph);
 
     size_p = size;
-    police = MLV_load_font("./Font/game_over.ttf", size_p);
+    police = MLV_load_font("./Font/Crang.ttf", size_p);
 
     if((p->mode) == 0){
         for(i = 0; i < p->n; i++){
@@ -36,12 +36,14 @@ void display_plateau_mlv(plateau *p, button t_button_game[3]){
                 y = ch + i * size;
 
                 MLV_draw_rectangle(x, y, size, size, MLV_COLOR_BLACK);
-
-                if(p->tab[i][j].value != 0){
+                if(p->tab[i][j].select == 1){
+                    sprintf(text, "%d", p->tab[i][j].value);
+                    MLV_draw_text_box_with_font(x, y, size, size, text, police, 10, MLV_COLOR_BLACK, MLV_COLOR_BLACK, MLV_COLOR_GREEN, MLV_TEXT_CENTER, MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
+                }else if(p->tab[i][j].value == 0){
+                    MLV_draw_text_box_with_font(x, y, size, size, "", police, 10, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_rgba(179, 197, 215, 255), MLV_TEXT_CENTER, MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
+                } else {
                     sprintf(text, "%d", p->tab[i][j].value);
                     MLV_draw_text_box_with_font(x, y, size, size, text, police, 10, MLV_COLOR_BLACK, MLV_COLOR_BLACK, MLV_rgba(147, 172, 199, 255), MLV_TEXT_CENTER, MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
-                } else { 
-                    MLV_draw_text_box_with_font(x, y, size, size, "", police, 10, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_rgba(179, 197, 215, 255), MLV_TEXT_CENTER, MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER); 
                 }
             }
         }

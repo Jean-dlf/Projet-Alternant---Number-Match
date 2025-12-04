@@ -12,7 +12,7 @@ void create_button(button *button, char* message, int x, int y, MLV_Font *police
 
 void display_text(button button , MLV_Font *police);
 
-void menu_p(button t_button_menu[5]);
+void menu_p(button t_button_menu[4]);
 
 void menu_save(button t_button_save[5]);
 
@@ -22,7 +22,9 @@ void menu_choice_mode(button t_button_choice_mode[3]);
 
 int choice_mode_game();
 
-void menu_rules(button *back);
+void menu_rules_classic(button *back);
+
+void menu_rules_locksmith(button *back);
 
 void menu_score(button *back);
 
