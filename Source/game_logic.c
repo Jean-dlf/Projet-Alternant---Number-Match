@@ -51,6 +51,16 @@ int points_for_match(l_cases *l_c){
     return 5;
 }
 
+int add_point_for_bonus(parti plyr){
+    int score = 0;
+
+    if(plyr.bonus_clue > 0){
+        score = plyr.bonus_clue * 25;
+    }
+
+    return score;
+}
+
 /* Permet de vérifier si une case à une value de 0 soit est vide */
 int verif_empty_boxes(plateau *p, int x, int y){
     if(p->tab[x][y].value == 0){
@@ -85,7 +95,84 @@ cases high_box(cases *c1, cases *c2){
     }
 }
 
-int neighbor_start_beginning_line(cases *c1, cases *c2, plateau *p){
+
+/* Fonction qui vérifie si 2 cases sont voisines */
+int neighbors(cases *c1, cases *c2, plateau *p){
+    int espace_x, espace_y, x, y, dec_x, dec_y;
+    
+    /* On calcule la différence entre les coordonnées x et y de c1 et c2 */
+    if(c1->x >= c2->x){
+        espace_x = c1->x - c2->x;
+    } else {
+        espace_x = c2->x - c1->x;
+    }
+
+    if(c1->y >= c2->y){
+        espace_y = c1->y - c2->y;
+    } else {
+        espace_y = c2->y - c1->y;
+    }
+    
+    /* Vérifie si ils sont voisins directs soit côte à côté sans être sur la même case */
+    if((espace_x <= 1 && espace_y <= 1) && (espace_x != 0 && espace_y != 0)){
+        return 1;
+    }
+    
+    /** On regarde si y'a des cases vides entre **/
+    /* D'abord on regarde si ils peuvent être voisins */
+    if((c1->x == c2->x) || (c1->y == c2->y) || (espace_x == espace_y)){
+        
+        /** On calcule la direction (Diagonale, Horizontale, Verticale) **/
+        
+        /* Calcul de x */
+        if(c1->x > c2->x){
+            dec_x = -1;
+        } else if(c1->x < c2->x){
+            dec_x = 1;
+        } else {
+            dec_x = 0;
+        }
+
+            /* Calcul de y */
+            if(c1->y > c2->y){
+            dec_y = -1;
+        } else if(c1->y < c2->y){
+            dec_y = 1;
+        } else {
+            dec_y = 0;
+        }
+
+        /* On commence en c1 en l'excluant */
+        x = c1->x + dec_x;
+        y = c1->y + dec_y;
+        
+        /* On parcourt */
+        while(x != c2->x || y != c2->y){
+            /* On regarde si les coordonnées sont toujours dans le plateau */
+            if(in_plateau(p, x, y) == 0){
+                return 0;
+            }
+            
+            /* Pas voisins car pas de cases vides entre elles */
+            if(verif_empty_boxes(p, x, y) == 0){
+                return 0;
+            }
+            
+            /* On incrément avec la direction voulu */
+            x += dec_x;
+            y += dec_y;
+        }
+
+        /* Les cases sont voisines car il y a que des cases vides entre elles */
+        return 1;
+        
+        
+    } else {
+        return 0;
+    }
+}
+
+int neighbors_linear_scan(cases *c1, cases *c2, plateau *p){
     cases c_h, c_b;
     int i, j;
 
@@ -99,37 +186,20 @@ int neighbor_start_beginning_line(cases *c1, cases *c2, plateau *p){
         c_b = *c1;
     }
 
-    /* On vérifie si la case haute est à la dernière colonne et si la case basse est à la 1ère colonne de la lines d'après */
-    if(c_h.y == p->m - 1 && c_b.x == c_h.x + 1 && c_b.y == 0){
-        return 1;
-    }
-
-    /* Vérification avec des 0 entre c1 et c2 */
     i = c_h.x;
     j = c_h.y;
 
-    /* On parcourt tant qu'on a pas atteint la case d'en bas */
-    while(i != c_b.x || j != c_b.y){
-        /* On part de la case après celle d'en haut */
+    while(i < p->n && (i < c_b.x || (i == c_b.x && j < c_b.y))){
         j++;
-
-
-        /* Vérifie si on ne dépasse pas le nombre de colonne max */
         if(j == p->m){
-        j = 0;
-        i++;
+            j = 0;
+            i++;
         }
 
-        /* Vérifie si on a atteint le but */
         if(i == c_b.x && j == c_b.y){
-            if(p->tab[i][j].value == c_b.value){
-                return 1;
-            } else {
-                return 0;
-            }
+            return 1;
         }
 
-        /* Vérifie si la value de la case actuelle = 0 */
         if(p->tab[i][j].value != 0){
             return 0;
         }
@@ -138,121 +208,11 @@ int neighbor_start_beginning_line(cases *c1, cases *c2, plateau *p){
     return 0;
 }
 
-/* Fonction qui vérifie si 2 cases sont voisines */
-int neighbors(cases *c1, cases *c2, plateau *p){
-    int espace_x, espace_y, x, y, dec_x, dec_y;
-
-    /* On calcule la différence entre les coordonnées x et y de c1 et c2 */
-    if(c1->x >= c2->x){
-        espace_x = c1->x - c2->x;
-    } else {
-        espace_x = c2->x - c1->x;
-    }
-
-    if(c1->y >= c2->y){
-        espace_y = c1->y - c2->y;
-    } else {
-        espace_y = c2->y - c1->y;
-    }
-
-    /* Vérifie si ils sont voisins directs soit côte à côté sans être sur la même case */
-    if((espace_x <= 1 && espace_y <= 1) && (espace_x != 0 && espace_y != 0)){
-        return 1;
-    }
-
-    /** On regarde si y'a des cases vides entre **/
-        /* D'abord on regarde si ils peuvent être voisins */
-    if((c1->x == c2->x) || (c1->y == c2->y) || (espace_x == espace_y)){
-        
-        /** On calcule la direction (Diagonale, Horizontale, Verticale) **/
-
-            /* Calcul de x */
-        if(c1->x > c2->x){
-            dec_x = -1;
-        } else if(c1->x < c2->x){
-            dec_x = 1;
-        } else {
-            dec_x = 0;
-        }
-
-            /* Calcul de y */
-        if(c1->y > c2->y){
-            dec_y = -1;
-        } else if(c1->y < c2->y){
-            dec_y = 1;
-        } else {
-            dec_y = 0;
-        }
-
-        /* On commence en c1 en l'excluant */
-        x = c1->x + dec_x;
-        y = c1->y + dec_y;
-
-        /* On parcourt */
-        while(x != c2->x || y != c2->y){
-            /* On regarde si les coordonnées sont toujours dans le plateau */
-            if(in_plateau(p, x, y) == 0){
-                return 0;
-            }
-
-            /* Pas voisins car pas de cases vides entre elles */
-            if(verif_empty_boxes(p, x, y) == 0){
-                return 0;
-            }
-
-            /* On incrément avec la direction voulu */
-            x += dec_x;
-            y += dec_y;
-        }
-
-        /* Les cases sont voisines car il y a que des cases vides entre elles */
-        return 1;
-
-
-    } else {
-        return 0;
-    }
-}
-
-/* Permet de vérifier si des cases sont voisines malgré un changement de lines */
-int neighbors_more(cases *c1, cases *c2, plateau *p){
-    int i, j;
-    cases c_h, c_b;
-
-    if(neighbors(c1, c2, p)){
-        return 1;
-    } else {
-
-        c_h = high_box(c1, c2);
-
-        if(c_h.x == c1->x && c_h.y == c1->y && c_h.value == c1->value){
-            c_b = *c2;
-        } else {
-            c_b = *c1;
-        }
-
-        /* On parcourt à partir de la case après la case haute */
-        for(i = c_h.x; i < p->n; i++){
-            for(j = c_h.y + 1; j < p->m; j++){
-
-                if(i == c_b.x && j == c_b.y){
-                    return 1;
-                }
-
-                if(p->tab[i][j].value != 0){
-                    return 0;
-                }
-            }
-        }
-    }
-    return 0;
-}
-
 /* Permet de rentrer les coordonnées des cases qu'on veut pour vérifier le match */
 cases select_box(plateau *p){
     int lig, col;
     cases c;
-
+    
     /* Pour entrer la lines souhaitée */
     printf("Veuillez entrer le numéro de la lines (de 0 à %d) : ", p->n - 1);
     if((scanf("%d", &lig) != 1) || lig < 0 || lig > p->n - 1){ /* On vérifie que le numéro de la lines est dans le plateau */
@@ -322,11 +282,13 @@ l_cases pair_list(plateau *p){
     return l_c;
 }
 
+
+/*(neighbors_more(&l_c->c[0], &l_c->c[1], p)) || (neighbor_start_beginning_line(&l_c->c[0], &l_c->c[1], p))*/ 
 /* Fonction qui vérifie le match de 2 cases dans un l_cases */
 int match(l_cases *l_c, plateau *p){
 
     /* Toutes les conditions pour le match */
-    if((similar_boxes(&l_c->c[0], &l_c->c[1]) || verif_sum_10(&l_c->c[0], &l_c->c[1])) && (neighbors(&l_c->c[0], &l_c->c[1], p) || (neighbors_more(&l_c->c[0], &l_c->c[1], p)) || (neighbor_start_beginning_line(&l_c->c[0], &l_c->c[1], p)) )){
+    if((similar_boxes(&l_c->c[0], &l_c->c[1]) || verif_sum_10(&l_c->c[0], &l_c->c[1])) && (neighbors(&l_c->c[0], &l_c->c[1], p) || neighbors_linear_scan(&l_c->c[0], &l_c->c[1], p))){
         /* Si toutes les conditions sont remplies */
         /*printf("Il y a match\n");*/
         return 1;
@@ -813,12 +775,19 @@ int empty(plateau *p){
     return 1; 
 }
 
-int loose(plateau *p, int nb_add_lig, int nb_clu_cpl){
+int loose(plateau *p, int nb_add_lig){
     tab_couples c_possible = possible_couples(p);
 
-    if(nb_add_lig == 0 && nb_clu_cpl == 0 && !empty(p) && c_possible.n == 0) {
+    if(empty(p)){
+        free_tab_couples(&c_possible);
+        return 0;
+    }
+
+    if(nb_add_lig == 0 && c_possible.n == 0){
+        free_tab_couples(&c_possible);
         return 1;
     }
 
+    free_tab_couples(&c_possible);
     return 0;
 }

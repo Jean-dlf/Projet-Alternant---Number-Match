@@ -38,4 +38,8 @@ void display_text_box(char *message);
 
 void ask_name(parti *p);
 
+void recap_game(parti player);
+
+void menu_ask_difficulty(button t_button_level[5]);
+
 #endif

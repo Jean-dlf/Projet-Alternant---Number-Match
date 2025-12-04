@@ -6,16 +6,22 @@
 
 /*** Parti score et nom  ***/
 
-int load_save(char *nom, parti *plyr, plateau **p){
+int load_save(char *name_f, parti *plyr, plateau **p){
     FILE *f = NULL;
-    int i, j, n, m;
+    int i, j, n, m, mode_tmp;
 
-    if((f = fopen(nom, "r")) == NULL){
+    if((f = fopen(name_f, "r")) == NULL){
         fprintf(stderr, "Erreur lors de l'ouverture du fichier f\n");
         return -1;
     }
 
-    if(fscanf(f, "%10s %d %d %d %d", plyr->name_player, &plyr->score, &plyr->score_max, &plyr->bonus_add_lines, &plyr->bonus_clue) != 5){
+    if(fscanf(f, "%10s", plyr->name_player) != 1){
+        fprintf(stderr, "Erreur lecture du nom du joueur\n");
+        fclose(f);
+        return -1;
+    }
+
+    if(fscanf(f, "%d %d %d %d %d %d", &plyr->score, &plyr->score_max, &plyr->bonus_add_lines, &plyr->bonus_clue, &mode_tmp, &plyr->difficulty) != 6){
         fprintf(stderr, "Erreur lecture informations du joueur\n");
         fclose(f);
         return -1;
@@ -28,6 +34,7 @@ int load_save(char *nom, parti *plyr, plateau **p){
     }
 
     *p = initialisation_plateau(n, m);
+    (*p)->mode = mode_tmp;
     
     for(i = 0; i < n; i++){
         for(j = 0; j < m; j++){
@@ -43,16 +50,17 @@ int load_save(char *nom, parti *plyr, plateau **p){
     return 1;
 }
 
-int save_game(char *nom, parti *plyr, plateau *p){
+int save_game(char *name_f, parti *plyr, plateau *p){
     FILE *f;
     int i, j;
 
-    if((f = fopen(nom, "w")) == NULL){
-        fprintf(stderr, "Erreur lors de l'ouverture du fichier f");
+    if((f = fopen(name_f, "w")) == NULL){
+        fprintf(stderr, "Erreur lors de l'ouverture du fichier %s\n", name_f);
         return -1;
     }
 
-    fprintf(f, "%s %d %d %d %d\n", plyr->name_player, plyr->score, plyr->score_max, plyr->bonus_add_lines, plyr->bonus_clue);
+    fprintf(f, "%s\n", plyr->name_player);
+    fprintf(f, "%d %d %d %d %d %d\n", plyr->score, plyr->score_max, plyr->bonus_add_lines, plyr->bonus_clue, p->mode, plyr->difficulty);
 
     fprintf(f, "%d %d\n", p->n, p->m);
 

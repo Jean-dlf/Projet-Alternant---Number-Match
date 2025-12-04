@@ -15,17 +15,17 @@ int verif_sum_10(cases *c1, cases *c2);
 
 int points_for_match(l_cases *l_c);
 
+int add_point_for_bonus(parti plyr);
+
 int verif_empty_boxes(plateau *p, int x, int y);
 
 int in_plateau(plateau *p, int x, int y);
 
 cases high_box(cases *c1, cases *c2);
 
-int neighbor_start_beginning_line(cases *c1, cases *c2, plateau *p);
-
 int neighbors(cases *c1, cases *c2, plateau *p);
 
-int neighbors_more(cases *c1, cases *c2, plateau *p);
+int neighbors_linear_scan(cases *c1, cases *c2, plateau *p);
 
 cases select_box(plateau *p);
 
@@ -71,6 +71,6 @@ int use_clue(plateau *p);
 
 int empty(plateau *p);
 
-int loose(plateau *p, int nb_ajt_lig, int nb_ind_cpl);
+int loose(plateau *p, int nb_ajt_lig);
 
 #endif

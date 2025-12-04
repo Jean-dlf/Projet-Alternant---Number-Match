@@ -19,3 +19,13 @@ void display_plateau(plateau *p){
         printf("| \n");
     }
 }
+
+void free_plateau(plateau *p){
+    int i;
+
+    for(i = 0; i < p->n; i++){
+        free(p->tab[i]);
+    }
+    free(p->tab);
+    free(p);
+}

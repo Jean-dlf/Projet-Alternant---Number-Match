@@ -58,7 +58,6 @@ void menu_p(button t_button_menu[5]){
     police = MLV_load_font("./Font/game_over.ttf", size_p);
 
     MLV_get_size_of_adapted_text_box_with_font("NUMBER MATCH", police, 10, &text_width, &text_height);
-  
     MLV_draw_adapted_text_box_with_font((LX - text_width) / 2, text_height / 3 - 25, "NUMBER MATCH", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
     size_p = 150;
@@ -231,17 +230,58 @@ void menu_rules(button *back){
     MLV_actualise_window();
 }
 
+void menu_ask_difficulty(button t_button_level[5]){
+    char *name_button[5] = {"6 X 6", "8 X 8", "6 X 10", "8 X 6", "Back"};
+    int text_width, text_height, i, size_p;
+    MLV_Font *police;
+
+    MLV_clear_window(MLV_COLOR_BEIGE);
+
+    size_p = 50;
+    police = MLV_load_font("./Font/Crang.ttf", size_p);
+
+    MLV_get_size_of_adapted_text_box_with_font("CHOOSE YOUR DIFFICULTY", police, 10, &text_width, &text_height);
+    MLV_draw_adapted_text_box_with_font((LX - text_width) / 2, text_height, "CHOOSE YOUR DIFFICULTY", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+
+    size_p = 30; 
+    police = MLV_load_font("./Font/Crang.ttf", size_p);
+
+    for(i = 0; i < 5; i++){
+        create_button(&t_button_level[i], name_button[i], LX / 2, (text_height * 2.5) + i * 120, police);
+        display_text(t_button_level[i], police);
+    }
+
+    MLV_free_font(police);
+    MLV_actualise_window();
+}
+
 void menu_score(button *back) {
     char *name_button_score[10] = {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"};
     char display[200];
     char *name_button_back[1] = {"BACK"};
+    char *name_files_score[4] = {"./Save/score1.txt", "./Save/score2.txt", "./Save/score3.txt", "./Save/score4.txt"};
+    button t_button_level[5];
     tparti t_player;
-    int text_width, text_height, i, k, size_p;
+    int text_width, text_height, i, k, size_p, mx, my, pressed;
     MLV_Font *police;
     MLV_Color color;
 
-    MLV_clear_window(MLV_COLOR_BEIGE);
+    pressed = -1;
+    menu_ask_difficulty(t_button_level);
+    MLV_actualise_window();
 
+    while(pressed == -1){
+        MLV_wait_mouse(&mx, &my);
+        pressed = clic_button(t_button_level, 5, mx, my);
+
+        if(pressed == 4){
+            return ;
+        }
+    }
+    
+
+    MLV_clear_window(MLV_COLOR_BEIGE);
+    
     /* Titre */
     size_p = 180;
     police = MLV_load_font("./Font/game_over.ttf", size_p);
@@ -253,12 +293,11 @@ void menu_score(button *back) {
     police = MLV_load_font("./Font/game_over.ttf", size_p);
     k = 0;
 
-    
-    if(collect_score("./Save/score.txt", t_player) == -1){
+
+    if(collect_score(name_files_score[pressed], t_player) == -1){
         fprintf(stderr, "Erreur lors de la récupération des scores\n");
         return ;
     }
-
 
     for(i = 0; i < 10; i++) {
         switch(i){
@@ -295,6 +334,13 @@ void menu_score(button *back) {
 
     MLV_free_font(police);
     MLV_actualise_window();
+
+    while(1){
+        MLV_wait_mouse(&mx, &my);
+        if(MLV_get_mouse_button_state(MLV_BUTTON_LEFT) == MLV_PRESSED){
+            break;
+        }
+    }
 }
 
 void menu_pause(button t_bouton_pause[3]){
@@ -469,4 +515,31 @@ void ask_name(parti *p){
     }
 
     MLV_free_font(police);
+}
+
+void recap_game(parti player){
+    char display[250];
+    int text_width, text_height, size_p;
+    MLV_Font *police;
+
+    MLV_clear_window(MLV_COLOR_BEIGE);
+
+    size_p = 180;
+    police = MLV_load_font("./Font/game_over.ttf", size_p);
+
+    MLV_get_size_of_adapted_text_box_with_font("RECAP GAME", police, 10, &text_width, &text_height);
+    MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, text_height / 3 - 25, "RECAP GAME", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+
+    MLV_free_font(police);
+
+    size_p = 100;
+    police = MLV_load_font("./Font/game_over.ttf", size_p);
+
+    sprintf(display, "NAME PLAYER : %s\nSCORE GAME : %d\nREMAINING BONUS CLUE : %d\nAJOUT DE %d POINTS", player.name_player, player.score, player.bonus_clue, add_point_for_bonus(player));
+    MLV_get_size_of_adapted_text_box_with_font(display, police, 10, &text_width, &text_height);
+    MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, (LY - text_height) / 2 , display, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+
+    MLV_free_font(police);
+    MLV_actualise_window();
+    MLV_wait_seconds(4);
 }

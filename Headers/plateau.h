@@ -7,4 +7,6 @@
 
 void display_plateau(plateau *p);
 
+void free_plateau(plateau *p);
+
 #endif

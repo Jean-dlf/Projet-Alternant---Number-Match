@@ -77,7 +77,7 @@ cases *initialisation_cases(int x, int y, int value){
 plateau *random_initialisation(plateau *p){
     int i, j;
 
-    for(i = 0; i < 3; i++){
+    for(i = 0; i < p->n; i++){
         for(j = 0; j < p->m; j++){
             p->tab[i][j].value = rand() % (9 - 1 + 1) + 1; /* Rand permet de mettre des values aléatoires et le reste permet de savoir l'intervalle (ici de 1 à 9) */
         }

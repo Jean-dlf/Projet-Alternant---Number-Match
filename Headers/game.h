@@ -5,6 +5,6 @@
 
 void game_term(plateau *p, int n, int m, int save, parti *player_s);
 
-void game_graphic(plateau *p, int n, int m, parti *player_s, int mode);
+int game_graphic(plateau *p, int n, int m, parti *player_s, int mode);
 
 #endif

@@ -44,6 +44,7 @@ typedef struct{
     char name_player[11];
     int bonus_add_lines;
     int bonus_clue;
+    int difficulty;
 } parti;
 typedef parti tparti[LENGTH_TP];
 

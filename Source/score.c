@@ -3,14 +3,15 @@
 #include <string.h>
 #include "../Headers/mlv.h"
 #include "../Headers/types.h"
+#include "../Headers/menu.h"
 
 #define MAX_SCORE 10
 
-int load_score(tparti t_player){
+int load_score(char *name_f, tparti t_player){
     FILE *f = NULL;
     int i;
 
-    if((f = fopen("./Save/score.txt", "r")) == NULL){
+    if((f = fopen(name_f, "r")) == NULL){
         fprintf(stderr, "Erreur lors de l'ouverture du fichier f\n");
         return -1;
     }
@@ -27,11 +28,11 @@ int load_score(tparti t_player){
     return 1;
 }
 
-int save_score(tparti t_player, int nb_score){
+int save_score(char *name_f, tparti t_player, int nb_score){
     FILE *f = NULL;
     int i;
 
-    if((f = fopen("./Save/score.txt", "w")) == NULL){
+    if((f = fopen(name_f, "w")) == NULL){
         fprintf(stderr, "Erreur lors de l'ouverture du fichier f\n");
         return -1;
     }
@@ -49,7 +50,7 @@ int collect_score(char *name_f, tparti t_player){
     int i;
 
     if((f = fopen(name_f, "r")) == NULL){
-        fprintf(stderr, "Erreur lors de l'ouverture du fichier f\n");
+        fprintf(stderr, "Erreur lors de l'ouverture du fichier %s\n", name_f);
         return -1;
     }
 
@@ -59,67 +60,40 @@ int collect_score(char *name_f, tparti t_player){
             fclose(f);
             return -1;
         }
-        printf("collect_score %d %s\n", t_player[i].score, t_player[i].name_player);
     }
     fclose(f);
     return 1;
 }
 
-int change_player_score(parti *plyr1, parti *plyr2){
-    parti plyr_tmp;
-    plyr_tmp.score = 0;
+int update_high_scores(parti player){
+    tparti t_player;
+    int i, j, inserted;
+    char *name_files_score[4] = {"./Save/score1.txt", "./Save/score2.txt", "./Save/score3.txt", "./Save/score4.txt"};
 
-    if((strcpy(plyr_tmp.name_player, plyr1->name_player)) == NULL ){
-        fprintf(stderr, "Erreur lors du deplacement\n");
-        return -1;
-    }
-    plyr_tmp.score = plyr1->score;
-
-    if((strcpy(plyr1->name_player, plyr2->name_player)) == NULL){
-        fprintf(stderr, "Erreur lors du deplacement\n");
-        return -1;
-    }
+    inserted = 0;
     
-    plyr1->score = plyr2->score;
-
-    if((strcpy(plyr2->name_player, plyr_tmp.name_player)) == NULL){
-        fprintf(stderr, "Erreur lors du deplacement\n");
+    printf("%d\n", player.difficulty);
+    if(collect_score(name_files_score[player.difficulty], t_player) == -1){
+        fprintf(stderr, "Erreur lors de la récupération des scores\n");
         return -1;
-    }
-    plyr2->score = plyr_tmp.score;
-    
-    return 1;
-}
-
-int tri_insertion(char *name_f, parti new_score, tparti t_player){
-    FILE *f;
-    int i, j;
-
-    if((f = fopen(name_f, "w")) == NULL){
-        fprintf(stderr, "Erreur lors de l'ouverture du fichier f\n");
-        return -1;
-    }
-
-    for(i = 0; i < 10; i++){
-        if(new_score.score_max > t_player[i].score_max){
-            for(j = 9; j > i; j--){
-                if(change_player_score(&t_player[i + 1], &t_player[i]) == -1){
-                    fprintf(stderr, "Erreur lors du déplacement de score\n");
-                    return -1;
-                }
-            }
-
-            if(change_player_score(&t_player[i], &new_score) == -1){
-                fprintf(stderr, "Erreur lors du déplacement de score\n");
-                return -1;
-            }
-        }
     }
 
     for(i = 0; i < LENGTH_TP; i++){
-        fprintf(f, "%s %d\n", t_player[i].name_player, t_player->score);
+        if(player.score > t_player[i].score){
+            for(j = LENGTH_TP - 1; j > i; j--){
+                t_player[j] = t_player[j-1];
+            }
+            t_player[i] = player;
+            inserted = 1;
+            break;
+        }
     }
 
-    fclose(f);
+    if(inserted){
+        if(save_score(name_files_score[player.difficulty], t_player, LENGTH_TP) == -1){
+            fprintf(stderr, "Erreur lors de la sauvegarde des scores\n");
+            return -1;
+        }
+    }
     return 1;
 }
