@@ -1,19 +1,31 @@
-
-/*types.h*/
-
 #ifndef _TYPES_H_
 #define _TYPES_H_
 
-#define LX 900
-#define LY 800
+/* -- Dimension Tableau -- */
+#define LX 1920
+#define LY 1200
+
+/* -- Longueur max texte boouton -- */
 #define LENGTH_TP 10
+
+/* -- VALEUR SELECTION BOUTON -- */
+#define SELECT_NONE 0
+#define SELECT_USER 1
+#define SELECT_CLUE 2
+
+/* -- VALEUR DIFFICULTE -- */
+#define NO_CUSTOM 0
+#define CUSTOM 1
+
+/* -- TAILLE DES TITRES -- */
+#define TITLE_SIZE 120
 
 /* Une case du plateau */
 typedef struct{
     int x; /* Coordonnée x : ligne */
     int y; /* Coordonnée y : colonne */
     int value; /* Valeur de la case */
-    int select; /* case selectionner : 1, sinon 0*/
+    int select; /* Case sélectionnée : 1 ; sinon 0 */
 } cases;
 
 /* Type plateau de jeu (qui contient toutes les cases) */
@@ -50,7 +62,7 @@ typedef struct{
 typedef parti tparti[LENGTH_TP];
 
 /* Menu */
-#define L 100
+#define L 20
 
 typedef struct{
   int x;

@@ -1,7 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <MLV/MLV_all.h>
 #include "../Headers/types.h"
 #include "../Headers/plateau.h"
+#include "../Headers/menu.h"
 #include "../Headers/game_logic.h"
 
 void viderBuffer()
@@ -703,15 +705,18 @@ l_cases random_couple(tab_couples *t_c){
     int random;
     l_cases empty = {0, NULL};
     
+    /* Aucun couple */
+    if(t_c->n == 0){
+        display_text_box("Il n'y a plus de possibilités, utilisez l'ajout de ligne.");
+        MLV_wait_mouse(NULL, NULL);
+        printf("Il n'y a pas de solutions possibles\nUtilisez le bonus ajout de lines\n");
+        return empty;
+    }
+
     /* Qu'un seul couple possible */
     if(t_c->n == 1){
         return t_c->lc[0];
     } 
-    /* Aucun couple */
-    else if(t_c->n == 0){
-        printf("Il n'y a pas de solutions possibles\nUtilisez le bonus ajout de lines\n");
-        return empty;
-    }
 
     /* Si plusieurs alors on choisi aléatoirement un couple */
     random = rand() % t_c->n;
@@ -720,7 +725,7 @@ l_cases random_couple(tab_couples *t_c){
 }
 
 /* Utilisation du bonus indice */
-void bonus_clue(plateau *p){
+int bonus_clue(plateau *p){
     tab_couples t_c;
     l_cases l_c;
 
@@ -732,13 +737,18 @@ void bonus_clue(plateau *p){
 
     /* Si aucun couple retourne rien */
     if(l_c.n == 0){
-        return;
+        return 0;
     } 
+
+    p->tab[l_c.c[0].x][l_c.c[0].y].select = SELECT_CLUE;
+    p->tab[l_c.c[1].x][l_c.c[1].y].select = SELECT_CLUE;
 
     /* Affiche du couple choisit */
     printf("Voici une solution possible parmi tous les couples possibles \n");
     display_l_cases(l_c);
-    
+
+    free_tab_couples(&t_c);
+    return 1;
 }
 
 /* Demande d'utilisation du bonus indice */
@@ -760,6 +770,18 @@ int use_clue(plateau *p){
         return 1;
     }
     return 0;
+}
+
+void delete_bonus_clue(plateau *p){
+    int i, j;
+
+    for(i = 0; i < p->n; i++){
+        for(j = 0; j < p->m; j++){
+            if(p->tab[i][j].select == SELECT_CLUE){
+                p->tab[i][j].select = SELECT_NONE;
+            }
+        }
+    }
 }
 
 /*** Défaite ***/

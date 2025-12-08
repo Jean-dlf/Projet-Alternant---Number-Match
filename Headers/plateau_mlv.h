@@ -3,6 +3,11 @@
 
 #include "types.h"
 
-void display_plateau_mlv(plateau *p, button t_button_game[2]);
+#define VISIBLE 11
+#define CASES 90
+
+extern int offset;
+
+void display_plateau_mlv(plateau *p, button t_button_game[5]);
 
 #endif

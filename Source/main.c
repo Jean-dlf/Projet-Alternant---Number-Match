@@ -12,7 +12,7 @@
 /* Le main est vide, il contient simplement les valeurs dont on a besoin, ici le nombre de lignes et de colonnes du plateau et le plateau */
 int main(){
 
-    MLV_create_window("NUMBER MATCH", "NUMBER MATCH", LX, LY);
+    MLV_create_full_screen_window("NUMBER MATCH", "NUMBER MATCH", LX, LY);
 
     srand(time(NULL));
 

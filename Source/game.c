@@ -145,55 +145,83 @@ void game_term(plateau *p, int n, int m, int save, parti *player_s){
 }
 
 
+
 /* Version graphique */
 int game_graphic(plateau *p, int n, int m, parti *player_s, int mode){
-    int pts, nb_ajt_lig, nb_ind_cpl, loose_i, size;
+    int pts, nb_ajt_lig, nb_ind_cpl, loose_i, size, clue_active, free_p;
     int *empty_tab = NULL;
     int mx, my, pressed;
     plateau *tmp;
-    button t_bouton_game[3];
+    button t_bouton_game[5];
     l_cases *l_c;
     cases *c1 = NULL, *c2 = NULL;
     parti player;
 
-    if(player_s && p){
-        player = *player_s;
-        nb_ajt_lig = player.bonus_add_lines;
-        nb_ind_cpl = player.bonus_clue;
-        p->mode = mode;
-    } else {
+    free_p = 0;
+
+    if(p == NULL){
         p = initialisation_plateau(n, m);
         p->mode = mode;
         random_initialisation(p);
+        free_p = 1;
+    } else {
+        p->mode = mode;
     }
 
     player = *player_s;
-
     nb_ajt_lig = player.bonus_add_lines;
     nb_ind_cpl = player.bonus_clue;
-    
+
     display_plateau_mlv(p, t_bouton_game);
     MLV_actualise_window();
     
+    clue_active = 0;
     loose_i = 0;
-    
+
     while(p->n != 0 && loose_i == 0){
 
         MLV_wait_mouse(&mx, &my);
-        pressed = clic_button(t_bouton_game, 3, mx, my);
+        pressed = clic_button(t_bouton_game, 5, mx, my);
 
-        if(pressed == 0 && nb_ajt_lig > 0){
+        if(clue_active){
+            c1 = get_details(p, mx, my);
+            if(c1 != NULL){
+                delete_bonus_clue(p);
+                clue_active = 0;
+            }
+        }
+
+        if(pressed == 0){
+            offset--;
+            if(offset < 0){
+                offset = 0;
+            }
+        }else if(pressed == 1){
+            offset++;
+            if(offset > p->n - VISIBLE){
+                offset = p->n - VISIBLE;
+            }
+
+        }else if(pressed == 2 && nb_ajt_lig > 0){
             tmp = bonus_add_lines(p);
             if(tmp != p){
-                free_plateau(p);
+                if(free_p){
+                    free_plateau(p);
+                }
                 p = tmp;
+                free_p = 1;
             }
             nb_ajt_lig--;
-        } 
-        else if (pressed == 1 && nb_ind_cpl > 0){
-            bonus_clue(p);
-            nb_ind_cpl--;
-        } else if (pressed == 2){
+
+        } else if(pressed == 3 && nb_ind_cpl > 0){
+            clue_active = bonus_clue(p);
+            if(clue_active){
+                nb_ind_cpl--;
+                display_plateau_mlv(p, t_bouton_game);
+                MLV_actualise_window();
+            }
+
+        } else if(pressed == 4){
             if(pause_game(&player, p) == 0){
                 if(player_s){
                     *player_s = player;
@@ -202,20 +230,23 @@ int game_graphic(plateau *p, int n, int m, parti *player_s, int mode){
                 printf("Partie quittée depuis le menu pause\n");
                 return -1;
             }
-        } else{
-            c1 = get_details(p, mx, my);
 
-            if(c1 != NULL){
+        } else {
+            c1 = get_details(p, mx, my);
+            if(c1 != NULL && c1->value != 0){
                 c1->select = 1;
                 display_plateau_mlv(p, t_bouton_game);
                 MLV_actualise_window();
+
                 MLV_wait_mouse(&mx, &my);
                 c2 = get_details(p, mx, my);
 
-                if(c2 != NULL && c1 != c2){
-                    c1->select = 2;
+                if(c2 != NULL && c1 != c2 && c2->value != 0){
+                    c2->select = 1;
+                    
                     display_plateau_mlv(p, t_bouton_game);
                     MLV_actualise_window();
+
                     l_c = initialisation_l_cases(c1, c2);
                     if(l_c){
                         if(match(l_c, p)){
@@ -232,12 +263,18 @@ int game_graphic(plateau *p, int n, int m, parti *player_s, int mode){
                                 empty_tab = NULL;
                             }
                         }
-                        if(l_c){
+
+                        c1->select = 0;
+                        c2->select = 0;
+
+                        if (l_c) {
                             free(l_c->c);
                             free(l_c);
                             l_c = NULL;
                         }
                     }
+                } else {
+                    c1->select = 0;
                 }
             }
         }
@@ -250,24 +287,34 @@ int game_graphic(plateau *p, int n, int m, parti *player_s, int mode){
             printf("Score final : %d\n", player.score);
 
             player.score += add_point_for_bonus(player);
-
             printf("Score final après ajout bonus : %d\n", player.score);
 
             update_high_scores(player);
-            
+
             player.bonus_add_lines = nb_ajt_lig;
             player.bonus_clue = nb_ind_cpl;
             *player_s = player;
+
+            if(free_p){
+                free_plateau(p);
+            }
 
             return 0;
         }
     }
 
+    printf("player.score = %d\n", player.score);
+    printf("Bonus de 100 pour avoir vidé le tableau\n");
+    player.score += 100;
     printf("Félicitations ! Score : %d\n", player.score);
 
     player.bonus_add_lines = nb_ajt_lig;
     player.bonus_clue = nb_ind_cpl;
     *player_s = player;
+
+    if(free_p){
+        free_plateau(p);
+    }
 
     return 1;
 }

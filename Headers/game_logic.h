@@ -63,9 +63,11 @@ void free_tab_couples(tab_couples *t_c);
 
 l_cases random_couple(tab_couples *t_c);
 
-void bonus_clue(plateau *p);
+int bonus_clue(plateau *p);
 
 int use_clue(plateau *p);
+
+void delete_bonus_clue(plateau *p);
 
 /*** Défaite ***/
 

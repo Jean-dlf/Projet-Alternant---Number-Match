@@ -71,6 +71,10 @@ int update_high_scores(parti player){
     char *name_files_score[4] = {"./Save/score1.txt", "./Save/score2.txt", "./Save/score3.txt", "./Save/score4.txt"};
 
     inserted = 0;
+
+    if(player.difficulty < 0 || player.difficulty > 3){
+        return 0;
+    }
     
     printf("%d\n", player.difficulty);
     if(collect_score(name_files_score[player.difficulty], t_player) == -1){
