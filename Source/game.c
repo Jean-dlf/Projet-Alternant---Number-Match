@@ -73,6 +73,8 @@ void game_term(plateau *p, int n, int m, int save, parti *player_s){
             pts = points_for_match(&l_c);
             player.score += pts;
             printf("+%d points ! Score actuel : %d\n", pts, player.score);
+            p->score_actuel = player.score;
+            display_plateau(p);
 
             empty_tab = empty_lines(p, &size);
             if(size != 0){

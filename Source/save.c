@@ -35,6 +35,7 @@ int load_save(char *name_f, parti *plyr, plateau **p){
 
     *p = initialisation_plateau(n, m);
     (*p)->mode = mode_tmp;
+    (*p)->score_actuel = &plyr->score;
     
     for(i = 0; i < n; i++){
         for(j = 0; j < m; j++){

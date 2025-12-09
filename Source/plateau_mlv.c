@@ -26,6 +26,7 @@ void display_plateau_mlv(plateau *p, button t_button_game[5]){
     MLV_get_size_of_adapted_text_box_with_font("NUMBER MATCH", police, 10, &text_width, &text_height);
     MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, 25, "NUMBER MATCH", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
+    
     if(offset < 0){
         offset = 0;
     }
@@ -143,6 +144,14 @@ void display_plateau_mlv(plateau *p, button t_button_game[5]){
         create_button(&t_button_game[i], name_button[i], bx, by, police);
         display_text(t_button_game[i], police);
     }
+
+    by = y0 + (i - 2) * space;
+    
+    sprintf(text,"SCORE : %d",p->score_actuel);
+    
+    MLV_get_size_of_adapted_text_box_with_font(text, police, 10, &text_width, &text_height);
+    
+    MLV_draw_adapted_text_box_with_font( bx/2, by, text, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_LEFT);
     
     MLV_free_font(police);
 }

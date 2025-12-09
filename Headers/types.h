@@ -34,6 +34,7 @@ typedef struct{
     int n; /* Longueur des lignes */
     int m; /* Longueur des colonnes */
     int mode; /* Mode de jeu */
+    int score_actuel; /* pour l'affichage dans la fonction display_plateau_mlv*/
 } plateau;
 
 /* Type fait pour représenter une paire de cases; on mettra 2 cases différentes du tableau pour vérifier si les 2 choisies peuvent être matché */
