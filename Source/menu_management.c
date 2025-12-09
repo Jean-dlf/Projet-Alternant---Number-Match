@@ -14,7 +14,7 @@
 void management(){
     plateau *p = NULL;
     plateau p_custom;
-    int n = 3, m = 6;
+    int n = 0, m = 0;
     button t_menu_p[4], t_menu_s[5], t_menu_level[6], next;
     char *nom_save[4] = {"./Save/save1.txt", "./Save/save2.txt", "./Save/save3.txt", "./Save/save4.txt"};
     int pressed, mx, my, c_save, mode_game, res, pn, pm, back_menu;

@@ -9,11 +9,11 @@
 
 int offset = 0;
 
-void display_plateau_mlv(plateau *p, button t_button_game[5]){
+void display_plateau_mlv(plateau *p, button t_button_game[5], double elapsed){
     int real_visible, x0, y0, val, select;
     int size_p, text_width, text_height, i, j, x, y, l_p, space, bx, by, x_dot, y_dot;
     int width_img, height_img;
-    char text[25];
+    char text[25], chrono[64];
     char *name_button[5] = {"↑", "↓", "ADD LINES", "CLUE", "PAUSE"};
     MLV_Font *police;
     MLV_Image *image[1];
@@ -23,10 +23,12 @@ void display_plateau_mlv(plateau *p, button t_button_game[5]){
     size_p = 80;
     police = MLV_load_font("./Font/Crang.ttf", size_p);
 
+    sprintf(chrono, "Temps : %02d:%02d", (int)(elapsed/60), (int)elapsed % 60);
+    MLV_draw_text(20, 80, chrono, MLV_COLOR_BLACK);
+
     MLV_get_size_of_adapted_text_box_with_font("NUMBER MATCH", police, 10, &text_width, &text_height);
     MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, 25, "NUMBER MATCH", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
-    
     if(offset < 0){
         offset = 0;
     }
@@ -133,7 +135,6 @@ void display_plateau_mlv(plateau *p, button t_button_game[5]){
     MLV_free_font(police);
 
     /* -- BOUTONS -- */
-    
     space = 150;
     size_p = 50;
     police = MLV_load_font("./Font/Crang.ttf", size_p);
@@ -145,12 +146,11 @@ void display_plateau_mlv(plateau *p, button t_button_game[5]){
         display_text(t_button_game[i], police);
     }
 
-    by = y0 + (i - 2) * space;
+    /* -- Affichage du score -- */
+    by = y0 + (i - 2) * (space * 2);
     
-    sprintf(text,"SCORE : %d",p->score_actuel);
-    
+    sprintf(text, "SCORE : %d", p->score_actuel);
     MLV_get_size_of_adapted_text_box_with_font(text, police, 10, &text_width, &text_height);
-    
     MLV_draw_adapted_text_box_with_font( bx/2, by, text, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_LEFT);
     
     MLV_free_font(police);

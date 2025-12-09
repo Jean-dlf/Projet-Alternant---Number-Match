@@ -8,6 +8,6 @@
 
 extern int offset;
 
-void display_plateau_mlv(plateau *p, button t_button_game[5]);
+void display_plateau_mlv(plateau *p, button t_button_game[5], double elapsed);
 
 #endif

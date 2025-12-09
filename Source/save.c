@@ -21,7 +21,7 @@ int load_save(char *name_f, parti *plyr, plateau **p){
         return -1;
     }
 
-    if(fscanf(f, "%d %d %d %d %d %d", &plyr->score, &plyr->score_max, &plyr->bonus_add_lines, &plyr->bonus_clue, &mode_tmp, &plyr->difficulty) != 6){
+    if(fscanf(f, "%d %d %d %d %d", &plyr->score, &plyr->bonus_add_lines, &plyr->bonus_clue, &mode_tmp, &plyr->difficulty) != 5){
         fprintf(stderr, "Erreur lecture informations du joueur\n");
         fclose(f);
         return -1;
@@ -35,7 +35,7 @@ int load_save(char *name_f, parti *plyr, plateau **p){
 
     *p = initialisation_plateau(n, m);
     (*p)->mode = mode_tmp;
-    (*p)->score_actuel = &plyr->score;
+    (*p)->score_actuel = plyr->score;
     
     for(i = 0; i < n; i++){
         for(j = 0; j < m; j++){
@@ -61,7 +61,7 @@ int save_game(char *name_f, parti *plyr, plateau *p){
     }
 
     fprintf(f, "%s\n", plyr->name_player);
-    fprintf(f, "%d %d %d %d %d %d\n", plyr->score, plyr->score_max, plyr->bonus_add_lines, plyr->bonus_clue, p->mode, plyr->difficulty);
+    fprintf(f, "%d %d %d %d %d\n", plyr->score, plyr->bonus_add_lines, plyr->bonus_clue, p->mode, plyr->difficulty);
 
     fprintf(f, "%d %d\n", p->n, p->m);
 
