@@ -197,10 +197,8 @@ void menu_rules_classic(button *next){
 void menu_rules_locksmith(button *next){
     char display1[500], display2[500], display3[500];
     char *name_button_next[1] = {"CONTINUE"};
-    int title_width, title_height, text1_width, text1_height, text2_width, text2_height, text3_width, text3_height, width_img, height_img, x, size_p;
+    int title_width, title_height, text1_width, text1_height, text2_width, text2_height, text3_width, text3_height, size_p;
     MLV_Font *police;
-    MLV_Image *image[1];
-    char *name_image[1] = {"./Assets/locksmith_rules.png"};
 
     MLV_clear_window(MLV_rgba(122, 125, 125, 255));
 
@@ -212,19 +210,19 @@ void menu_rules_locksmith(button *next){
     MLV_draw_adapted_text_box_with_font( (LX - title_width) / 2, title_height / 3 - 25, "RULES", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
     /* -- Texte -- */
-    size_p = 22;
+    size_p = 18;
     police = MLV_load_font("./Font/Crang.ttf", size_p);
 
-    sprintf(display1, "COMMENT JOUER ?\n\n LES PAIRES PEUVENT ETRE FORMÉES DE PLUSIEURS MANIERES :\n - HORIZONTALEMENT\n - VERTICALEMENT\n - DIAGONALEMENT\n\n MATCHS POSSIBLES ?\n\n - 2 CADENAS IDENTIQUES\n - 2 CLES IDENTIQUES\n - 1 CLE ET SON CADENA CORRESPONDANT\n - 2 CHEVALIERS IDENTIQUES OU 1 CHEVALIER ET UNE CLE GRISE\n - 2 CADENAS JOKERS\n");    
+    sprintf(display1, "COMMENT JOUER ?\n\n LES PAIRES PEUVENT ETRE FORMÉES DE PLUSIEURS MANIERES :\n - HORIZONTALEMENT\n - VERTICALEMENT\n - DIAGONALEMENT\n\n\n MATCHS POSSIBLES ?\n\n - 2 CADENAS IDENTIQUES\n - 2 CLES IDENTIQUES\n - 1 CLE ET SON CADENA CORRESPONDANT\n - 2 CHEVALIERS IDENTIQUES OU 1 CHEVALIER ET UNE CLE GRISE\n - 2 CADENAS JOKERS\n");    
     MLV_get_size_of_adapted_text_box_with_font(display1, police, 10, &text1_width, &text1_height);
-    MLV_draw_adapted_text_box_with_font( (LX - text1_width) / 2, title_height * 1.5, display1, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_LEFT);
+    MLV_draw_adapted_text_box_with_font( (LX - text1_width) / 2, title_height * 1.5, display1, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
-    sprintf(display2, "SYSTEME DE POINTS ?\n\n - SOMME DES DEUX CHIFFRES = 10    →    +15 POINTS\n - CHIFFRES IDENTIQUES                →                +10 POINTS\n - TABLEAU ENTIEREMENT VIDE          →         +100 POINTS\n - BONUS D'INDICE RESTANT                         →                       +25 POINTS / BONUS");    
+    sprintf(display2, "\nSYSTEME DE POINTS ?\n\n - SOMME DES DEUX CHIFFRES = 10    →    +15 POINTS\n - CHIFFRES IDENTIQUES                →                +10 POINTS\n - TABLEAU ENTIEREMENT VIDE          →         +100 POINTS\n - BONUS D'INDICE RESTANT                         →                       +25 POINTS / BONUS");    
     MLV_get_size_of_adapted_text_box_with_font(display2, police, 10, &text2_width, &text2_height);
-    MLV_draw_adapted_text_box_with_font( (LX - text2_width) / 2, ((title_height * 1.5) + text1_height), display2, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_LEFT);
+    MLV_draw_adapted_text_box_with_font( (LX - text2_width) / 2, ((title_height * 1.5) + text1_height), display2, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
     /* ---- Texte règle bonus ---- */
-    sprintf(display3, "\n\nBONUS ?\n\n -- BONUS AJOUT DE LIGNES --\nAJOUTE RESPECTIVEMENT TOUTES LES CASES RESTANTES A LA SUITE DE LA DERNIERE CASE DU PLATEAU\n\n -- BONUS D'INDICE --\nAFFICHE UN MATCH ALEATOIRE POSSIBLE SUR LE PLATEAU\n\n\n Bon jeu !");
+    sprintf(display3, "\n\nBONUS ?\n\n -- BONUS AJOUT DE LIGNES --\nAJOUTE RESPECTIVEMENT TOUTES LES CASES RESTANTES A LA SUITE DE LA DERNIERE CASE DU PLATEAU\n -- BONUS D'INDICE --\nAFFICHE UN MATCH ALEATOIRE POSSIBLE SUR LE PLATEAU\n\nBon jeu !");
     MLV_get_size_of_adapted_text_box_with_font(display3, police, 10, &text3_width, &text3_height);
     MLV_draw_adapted_text_box_with_font( (LX - text3_width) / 2, ((title_height * 1.5) + text1_height + text2_height), display3, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
