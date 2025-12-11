@@ -59,6 +59,7 @@ typedef struct{
     int bonus_add_lines;
     int bonus_clue;
     int difficulty;
+    double time_elapsed;
 } parti;
 typedef parti tparti[LENGTH_TP];
 

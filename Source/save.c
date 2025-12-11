@@ -33,6 +33,12 @@ int load_save(char *name_f, parti *plyr, plateau **p){
         return -1;
     }
 
+    if(fscanf(f, "%lf", &plyr->time_elapsed) != 1){
+        fprintf(stderr, "Erreur lecture du timer\n");
+        fclose(f);
+        return -1;
+    }
+              
     *p = initialisation_plateau(n, m);
     (*p)->mode = mode_tmp;
     (*p)->score_actuel = plyr->score;
@@ -64,6 +70,8 @@ int save_game(char *name_f, parti *plyr, plateau *p){
     fprintf(f, "%d %d %d %d %d\n", plyr->score, plyr->bonus_add_lines, plyr->bonus_clue, p->mode, plyr->difficulty);
 
     fprintf(f, "%d %d\n", p->n, p->m);
+
+    fprintf(f, "%.2f\n", plyr->time_elapsed);
 
     for(i = 0; i < p->n; i++){
         for(j = 0; j < p->m; j++){

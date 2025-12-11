@@ -186,8 +186,8 @@ int game_graphic(plateau *p, int n, int m, parti *player_s, int mode){
     nb_ajt_lig = player->bonus_add_lines;
     nb_ind_cpl = player->bonus_clue;
 
-    start_time = time(NULL); /* Début du chronomètre */
-    elapsed = 0.0;
+    start_time = time(NULL) - player->time_elapsed; /* Début du chronomètre */
+    elapsed = player->time_elapsed;
 
     display_plateau_mlv(p, t_bouton_game, elapsed);
     MLV_actualise_window();
@@ -338,6 +338,7 @@ int game_graphic(plateau *p, int n, int m, parti *player_s, int mode){
         } 
 
         /* -- Affichage du plateau -- */
+        player->time_elapsed = elapsed;
         display_plateau_mlv(p, t_bouton_game, elapsed);
         MLV_actualise_window();
 
@@ -349,10 +350,12 @@ int game_graphic(plateau *p, int n, int m, parti *player_s, int mode){
             player->bonus_add_lines = nb_ajt_lig;
             player->bonus_clue = nb_ind_cpl;
             player_s = player;
+            player->time_elapsed = elapsed;
 
             if(free_p){
                 free_plateau(p);
             }
+            
             return 0;
         }
     }
@@ -361,6 +364,7 @@ int game_graphic(plateau *p, int n, int m, parti *player_s, int mode){
     player->score += 100;
     player->bonus_add_lines = nb_ajt_lig;
     player->bonus_clue = nb_ind_cpl;
+    player->time_elapsed = elapsed;
 
     /* -- On libère le plateau -- */
     if(free_p){

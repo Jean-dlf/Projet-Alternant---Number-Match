@@ -79,6 +79,7 @@ void management(){
                 plyr.score = 0;
                 plyr.bonus_add_lines = 3;
                 plyr.bonus_clue = 3;
+                plyr.time_elapsed = 0.0;
 
                 do{
                     MLV_wait_mouse(&mx, &my);
