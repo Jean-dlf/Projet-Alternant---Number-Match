@@ -243,11 +243,11 @@ int game_graphic(plateau *p, int n, int m, parti *player_s, int mode){
                         if(l_c){
                             if(match(l_c, p)){
                                 /* -- Il y a match -- */
-                                reset(p, *l_c);
                                 pts = points_for_match(l_c);
                                 player->score += pts;
                                 p->score_actuel = player->score;
 
+                                reset(p, *l_c);
 
                                 empty_tab = empty_lines(p, &size);
                                 if(size > 0 && empty_tab){
@@ -339,6 +339,8 @@ int game_graphic(plateau *p, int n, int m, parti *player_s, int mode){
 
         /* -- Affichage du plateau -- */
         player->time_elapsed = elapsed;
+        player->bonus_add_lines = nb_ajt_lig;
+        player->bonus_clue = nb_ind_cpl;
         display_plateau_mlv(p, t_bouton_game, elapsed);
         MLV_actualise_window();
 

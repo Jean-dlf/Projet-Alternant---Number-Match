@@ -149,9 +149,9 @@ int choice_mode_game(){
 
 /* -- Menu règles -- */
 void menu_rules_classic(button *next){
-    char display1[500], display2[500];
+    char display1[500], display2[500], display3[500];
     char *name_button_continue[1] = {"CONTINUE"};
-    int text1_width, text1_height, text2_width, text2_height, title_width, title_height, size_p;
+    int text1_width, text1_height, text2_width, text2_height, text3_width, text3_height, title_width, title_height, size_p;
     MLV_Font *police;
 
     MLV_clear_window(MLV_rgba(122, 125, 125, 255));
@@ -164,18 +164,23 @@ void menu_rules_classic(button *next){
     MLV_draw_adapted_text_box_with_font( (LX - title_width) / 2, title_height / 3 - 25, "RULES", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
     /* -- Texte règle -- */
-    size_p = 30;
+    size_p = 22;
     police = MLV_load_font("./Font/Crang.ttf", size_p);
     
     /* ---- Texte règle commande ---- */
     sprintf(display1, "COMMENT JOUER ?\n\n LES PAIRES PEUVENT ETRE FORMEES DE DIFFERENTES MANIERES :\n - HORIZONTALEMENT\n     - VERTICALEMENT\n     - DIAGONALEMENT\n- OU AVEC UN CHIFFRE EN FIN DE LIGNE ET L'AUTRE AU DEBUT DE LA SUIVANTE\n EGALEMENT VOUS POUVEZ MATCHER 2 CASES SI IL Y A DES 0 ENTRE ELLES\n\n");
     MLV_get_size_of_adapted_text_box_with_font(display1, police, 10, &text1_width, &text1_height);
-    MLV_draw_adapted_text_box_with_font( (LX - text1_width) / 2, title_height * 2, display1, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+    MLV_draw_adapted_text_box_with_font( (LX - text1_width) / 2, title_height * 1.5, display1, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
     /* ---- Texte règle points ---- */
-    sprintf(display2, "SYSTEME DE POINTS ?\n\n - SOMME DES DEUX CHIFFRES = 10    →    +15 POINTS\n - CHIFFRES IDENTIQUES                →                +10 POINTS\n - TABLEAU ENTIEREMENT VIDE          →         +100 POINTS\n - BONUS D'INDICE RESTANT                         →                       +25 POINTS / BONUS\n\n\n Bon jeu !");
+    sprintf(display2, "SYSTEME DE POINTS ?\n\n - SOMME DES DEUX CHIFFRES = 10    →    +15 POINTS\n - CHIFFRES IDENTIQUES                →                +10 POINTS\n - TABLEAU ENTIEREMENT VIDE          →         +100 POINTS\n - FIN PARTIE SI BONUS D'INDICE RESTANT            →            +25 POINTS / BONUS");
     MLV_get_size_of_adapted_text_box_with_font(display2, police, 10, &text2_width, &text2_height);
-    MLV_draw_adapted_text_box_with_font( (LX - text2_width) / 2, ((title_height * 2) + text1_height), display2, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+    MLV_draw_adapted_text_box_with_font( (LX - text2_width) / 2, ((title_height * 1.5) + text1_height), display2, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+
+    /* ---- Texte règle bonus ---- */
+    sprintf(display3, "\n\nBONUS ?\n\n -- BONUS AJOUT DE LIGNES --\nAJOUTE RESPECTIVEMENT TOUTES LES CASES RESTANTES A LA SUITE DE LA DERNIERE CASE DU PLATEAU\n\n -- BONUS D'INDICE --\nAFFICHE UN MATCH ALEATOIRE POSSIBLE SUR LE PLATEAU\n\n\n Bon jeu !");
+    MLV_get_size_of_adapted_text_box_with_font(display3, police, 10, &text3_width, &text3_height);
+    MLV_draw_adapted_text_box_with_font( (LX - text3_width) / 2, ((title_height * 1.5) + text1_height + text2_height), display3, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
     /* -- Bouton continue -- */
     size_p = 40;
@@ -190,9 +195,9 @@ void menu_rules_classic(button *next){
 
 /* -- Menu règles Locksmith -- */
 void menu_rules_locksmith(button *next){
-    char display1[500], display2[500];
+    char display1[500], display2[500], display3[500];
     char *name_button_next[1] = {"CONTINUE"};
-    int title_width, title_height, text1_width, text1_height, text2_width, text2_height, width_img, height_img, x, size_p;
+    int title_width, title_height, text1_width, text1_height, text2_width, text2_height, text3_width, text3_height, width_img, height_img, x, size_p;
     MLV_Font *police;
     MLV_Image *image[1];
     char *name_image[1] = {"./Assets/locksmith_rules.png"};
@@ -204,19 +209,24 @@ void menu_rules_locksmith(button *next){
 
     /* -- Titre -- */
     MLV_get_size_of_adapted_text_box_with_font("RULES", police, 5, &title_width, &title_height);
-    MLV_draw_adapted_text_box_with_font( (LX - title_width) / 2, title_height / 3, "RULES", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+    MLV_draw_adapted_text_box_with_font( (LX - title_width) / 2, title_height / 3 - 25, "RULES", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
     /* -- Texte -- */
-    size_p = 30;
+    size_p = 22;
     police = MLV_load_font("./Font/Crang.ttf", size_p);
 
-    sprintf(display1, "LES PAIRES PEUVENT ETRE FORMÉES DE PLUSIEURS MANIERES :\n\n - HORIZONTALEMENT\n - VERTICALEMENT\n - DIAGONALEMENT\n\n MATCHS POSSIBLES ?\n\n - 2 CADENAS IDENTIQUES\n - 2 CLES IDENTIQUES\n - 1 CLE ET SON CADENA CORRESPONDANT\n - 2 CHEVALIERS IDENTIQUES OU 1 CHEVALIER ET UNE CLE GRISE\n - 2 CADENAS JOKERS\n");    
+    sprintf(display1, "COMMENT JOUER ?\n\n LES PAIRES PEUVENT ETRE FORMÉES DE PLUSIEURS MANIERES :\n - HORIZONTALEMENT\n - VERTICALEMENT\n - DIAGONALEMENT\n\n MATCHS POSSIBLES ?\n\n - 2 CADENAS IDENTIQUES\n - 2 CLES IDENTIQUES\n - 1 CLE ET SON CADENA CORRESPONDANT\n - 2 CHEVALIERS IDENTIQUES OU 1 CHEVALIER ET UNE CLE GRISE\n - 2 CADENAS JOKERS\n");    
     MLV_get_size_of_adapted_text_box_with_font(display1, police, 10, &text1_width, &text1_height);
-    MLV_draw_adapted_text_box_with_font( (LX - text1_width) / 6, title_height * 2 - 50, display1, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_LEFT);
+    MLV_draw_adapted_text_box_with_font( (LX - text1_width) / 2, title_height * 1.5, display1, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_LEFT);
 
-    sprintf(display2, "SYSTEME DE POINTS ?\n\n - SOMME DES DEUX CHIFFRES = 10    →    +15 POINTS\n - CHIFFRES IDENTIQUES                →                +10 POINTS\n - TABLEAU ENTIEREMENT VIDE          →         +100 POINTS\n - BONUS D'INDICE RESTANT                         →                       +25 POINTS / BONUS\n\n\n Bon jeu !");    
+    sprintf(display2, "SYSTEME DE POINTS ?\n\n - SOMME DES DEUX CHIFFRES = 10    →    +15 POINTS\n - CHIFFRES IDENTIQUES                →                +10 POINTS\n - TABLEAU ENTIEREMENT VIDE          →         +100 POINTS\n - BONUS D'INDICE RESTANT                         →                       +25 POINTS / BONUS");    
     MLV_get_size_of_adapted_text_box_with_font(display2, police, 10, &text2_width, &text2_height);
-    MLV_draw_adapted_text_box_with_font( (LX - text2_width) / 6, ((title_height * 2) + text1_height) - 50, display2, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_LEFT);
+    MLV_draw_adapted_text_box_with_font( (LX - text2_width) / 2, ((title_height * 1.5) + text1_height), display2, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_LEFT);
+
+    /* ---- Texte règle bonus ---- */
+    sprintf(display3, "\n\nBONUS ?\n\n -- BONUS AJOUT DE LIGNES --\nAJOUTE RESPECTIVEMENT TOUTES LES CASES RESTANTES A LA SUITE DE LA DERNIERE CASE DU PLATEAU\n\n -- BONUS D'INDICE --\nAFFICHE UN MATCH ALEATOIRE POSSIBLE SUR LE PLATEAU\n\n\n Bon jeu !");
+    MLV_get_size_of_adapted_text_box_with_font(display3, police, 10, &text3_width, &text3_height);
+    MLV_draw_adapted_text_box_with_font( (LX - text3_width) / 2, ((title_height * 1.5) + text1_height + text2_height), display3, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
     /* -- Button continue -- */
     size_p = 40;
@@ -225,14 +235,14 @@ void menu_rules_locksmith(button *next){
     create_button(next, name_button_next[0], LX - 150, LY - 100, police);
     display_text(*next, police);
 
-    /* -- Image -- */
-    x = LX / 2;
+    /* /\* -- Image -- *\/ */
+    /* x = LX / 2; */
 
-    image[0] = MLV_load_image(name_image[0]);
-    MLV_resize_image_with_proportions(image[0], 500, 500);
-    MLV_get_image_size(image[0], &width_img, &height_img);
-    MLV_draw_image(image[0], x + width_img, (LY / 2) - height_img);
-    MLV_free_image(image[0]);
+    /* image[0] = MLV_load_image(name_image[0]); */
+    /* MLV_resize_image_with_proportions(image[0], 500, 500); */
+    /* MLV_get_image_size(image[0], &width_img, &height_img); */
+    /* MLV_draw_image(image[0], x + width_img, (LY / 2) - height_img); */
+    /* MLV_free_image(image[0]); */
 
     MLV_free_font(police);
     MLV_actualise_window();
@@ -286,7 +296,7 @@ void menu_score(){
     char *name_files_score[4] = {"./Save/score1.txt", "./Save/score2.txt", "./Save/score3.txt", "./Save/score4.txt"};
     button t_button_level[6];
     tparti t_player;
-    int text_width, text_height, title_width, title_height, i, size_p, mx, my, pressed, space;
+    int text_width, text_height, title_width, title_height, i, size_p, mx, my, pressed, space, minutes, seconds;
     MLV_Font *police;
     MLV_Color color;
 
@@ -349,8 +359,10 @@ void menu_score(){
         }
 
         space = 100;
+
+        convert_seconds_to_minutes(t_player[i].time_elapsed, &minutes, &seconds);
         
-        sprintf(display, "%s --   Score = %d   |   Pseudo = %s", name_button_score[i], t_player[i].score, t_player[i].name_player);
+        sprintf(display, "%s --     Score = %d     |     Pseudo = %s     |     Timer = %02d:%02d", name_button_score[i], t_player[i].score, t_player[i].name_player, minutes, seconds);
         MLV_get_size_of_adapted_text_box_with_font(display, police, 10, &text_width, &text_height);
         MLV_draw_adapted_text_box_with_font(50, (title_height * 1.5) + i * space, display, police, 10, MLV_ALPHA_TRANSPARENT, color, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
     }
@@ -532,7 +544,7 @@ void display_text_box(char *message){
 void ask_name(parti *p){
     int valide, size_p, marge;
     MLV_Font *police;
-    char mess_err[50];
+    char mess_err[64];
     char *tmp = NULL;
 
     MLV_clear_window(MLV_rgba(122, 125, 125, 255));
@@ -546,8 +558,8 @@ void ask_name(parti *p){
     while(valide){
         MLV_wait_input_box_with_font(marge, LY / 3, LX - (marge * 2), LY / 3, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_rgba(122, 125, 125, 255), "Enter your name :", &tmp, police);
 
-        if(strlen(tmp) > 10){
-            sprintf(mess_err, "You cannot have a name longer than 10 caracters");
+        if(strlen(tmp) > 10 || strlen(tmp) == 0){
+            sprintf(mess_err, "You cannot have a name longer than 10 characters or 0 character");
             display_text_box(mess_err);
         } else {
             strcpy(p->name_player, tmp);
@@ -564,7 +576,7 @@ void ask_name(parti *p){
 /* -- Affiche les données du joueur à la fin du partie -- */
 void recap_game(parti player){
     char display[250];
-    int text_width, text_height, size_p;
+    int text_width, text_height, size_p, minutes, seconds;
     MLV_Font *police;
 
     MLV_clear_window(MLV_rgba(122, 125, 125, 255));
@@ -582,7 +594,9 @@ void recap_game(parti player){
     size_p = 60;
     police = MLV_load_font("./Font/Crang.ttf", size_p);
 
-    sprintf(display, "NAME PLAYER : %s\n\nSCORE GAME : %d\n\nREMAINING BONUS CLUE : %d\n\nAJOUT DE %d POINTS", player.name_player, player.score, player.bonus_clue, add_point_for_bonus(player));
+    convert_seconds_to_minutes(player.time_elapsed, &minutes, &seconds);
+
+    sprintf(display, "NAME PLAYER : %s\n\nSCORE GAME : %d\n\nTIMER : %02d:%02d", player.name_player, player.score, minutes, seconds);
     MLV_get_size_of_adapted_text_box_with_font(display, police, 10, &text_width, &text_height);
     MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, (LY - text_height) / 2 , display, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
@@ -600,7 +614,7 @@ void menu_customised_dimensions(plateau *p){
 
     MLV_clear_window(MLV_rgba(122, 125, 125, 255));
 
-    size_p = 60;
+    size_p = 50;
     police = MLV_load_font("./Font/Crang.ttf", size_p);
 
     sprintf(display, "/!\\ -- In custom mode\n it's impossible to save your best scores.");
@@ -633,9 +647,23 @@ void menu_customised_dimensions(plateau *p){
 
     valide = 1;
 
+    MLV_free_font(police);
+    
+    MLV_clear_window(MLV_rgba(122, 125, 125, 255));
+
+    size_p = 50;
+    police = MLV_load_font("./Font/Crang.ttf", size_p);
+
+    sprintf(display, "/!\\ -- In custom mode\n it's impossible to save your best scores.");
+    MLV_get_size_of_adapted_text_box_with_font(display, police, 10, &text_width, &text_height);
+    MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, text_height / 2, display, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+    
+    size_p = 40;
+    police = MLV_load_font("./Font/Crang.ttf", size_p);
+    
     /* -- Demande pour la hauteur -- */
     while(valide){
-        MLV_wait_input_box_with_font(marge, LY / 3, LX - (marge * 2), LY / 3, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_rgba(122, 125, 125, 255), "Enter the height of the game board (min 3 | max 14) :", &tmp, police);
+        MLV_wait_input_box_with_font(marge, LY / 3, LX - (marge * 2), LY / 3, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_rgba(122, 125, 125, 255), "Enter the height of the game board --- min 3 | max 14 ->", &tmp, police);
         
         value = atoi(tmp);
         free(tmp);

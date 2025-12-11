@@ -7,9 +7,19 @@
 
 #define MAX_SCORE 10
 
+void convert_seconds_to_minutes(double t, int *m, int *s){
+    *m = (int)t / 60;
+    *s = (int)t % 60;
+}
+
+double convert_mmss_to_seconds(int m, int s){
+    return m * 60 + s;
+}
+
+
 int load_score(char *name_f, tparti t_player){
     FILE *f = NULL;
-    int i;
+    int i, minutes, seconds;
 
     if((f = fopen(name_f, "r")) == NULL){
         fprintf(stderr, "Erreur lors de l'ouverture du fichier f\n");
@@ -17,11 +27,13 @@ int load_score(char *name_f, tparti t_player){
     }
 
     for(i = 0; i < MAX_SCORE; i++){
-        if(fscanf(f, "%10s %d", t_player[i].name_player, &t_player[i].score) != 2){
+        if(fscanf(f, "%10s %d %d:%d", t_player[i].name_player, &t_player[i].score, &minutes, &seconds) != 4){
             fprintf(stderr, "Erreur lecture tableau score\n");
             fclose(f);
             return -1;
-        }   
+        }
+
+        t_player[i].time_elapsed = convert_mmss_to_seconds(minutes, seconds);
     }
 
     fclose(f);
@@ -30,7 +42,7 @@ int load_score(char *name_f, tparti t_player){
 
 int save_score(char *name_f, tparti t_player, int nb_score){
     FILE *f = NULL;
-    int i;
+    int i, minutes, seconds;
 
     if((f = fopen(name_f, "w")) == NULL){
         fprintf(stderr, "Erreur lors de l'ouverture du fichier f\n");
@@ -38,7 +50,9 @@ int save_score(char *name_f, tparti t_player, int nb_score){
     }
 
     for(i = 0; i < nb_score; i++){
-        fprintf(f, "%s %d\n", t_player[i].name_player, t_player[i].score);
+        convert_seconds_to_minutes(t_player[i].time_elapsed, &minutes, &seconds);
+        
+        fprintf(f, "%s %d %02d:%02d\n", t_player[i].name_player, t_player[i].score, minutes, seconds);
     }
 
     fclose(f);
@@ -47,7 +61,7 @@ int save_score(char *name_f, tparti t_player, int nb_score){
 
 int collect_score(char *name_f, tparti t_player){
     FILE *f = NULL;
-    int i;
+    int i, minutes, seconds;
 
     if((f = fopen(name_f, "r")) == NULL){
         fprintf(stderr, "Erreur lors de l'ouverture du fichier %s\n", name_f);
@@ -55,12 +69,15 @@ int collect_score(char *name_f, tparti t_player){
     }
 
     for(i = 0; i < LENGTH_TP; i++){
-        if(fscanf(f, "%10s %d", t_player[i].name_player, &t_player[i].score) != 2){
+        if(fscanf(f, "%10s %d %d:%d", t_player[i].name_player, &t_player[i].score, &minutes, &seconds) != 4){
             fprintf(stderr, "Erreur lors de la récupération\n");
             fclose(f);
             return -1;
         }
+
+        t_player[i].time_elapsed = convert_mmss_to_seconds(minutes, seconds);
     }
+   
     fclose(f);
     return 1;
 }
@@ -75,15 +92,15 @@ int update_high_scores(parti player){
     if(player.difficulty < 0 || player.difficulty > 3){
         return 0;
     }
-    
-    printf("%d\n", player.difficulty);
+   
     if(collect_score(name_files_score[player.difficulty], t_player) == -1){
         fprintf(stderr, "Erreur lors de la récupération des scores\n");
         return -1;
     }
 
     for(i = 0; i < LENGTH_TP; i++){
-        if(player.score > t_player[i].score){
+        
+        if(player.score > t_player[i].score || (player.score == t_player[i].score && player.time_elapsed < t_player[i].time_elapsed)){
             for(j = LENGTH_TP - 1; j > i; j--){
                 t_player[j] = t_player[j-1];
             }

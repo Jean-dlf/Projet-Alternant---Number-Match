@@ -18,24 +18,24 @@ void display_plateau_mlv(plateau *p, button t_button_game[5], double elapsed) {
     char *name_button[5] = {"↑", "↓", "ADD LINES", "CLUE", "PAUSE"};
     MLV_Font *police_title, *police_box, *police_timer, *police_but_score, *police_arrow;
     MLV_Image *image = NULL;  /* Pointeur pour l'image du nombre */
-    MLV_Image *background = NULL;  /* Pointeur pour l'image de fond */
+    /*MLV_Image *background = NULL;*/  /* Pointeur pour l'image de fond */
     MLV_Color wood_color = MLV_rgba(139, 69, 19, 255);  /* Couleur bois pour les cases du plateau */
     
     /* Initialiser la fenêtre */
     MLV_clear_window(MLV_rgba(122, 125, 125, 255));
 
     /* Charger et afficher le fond d'écran (image de pierre) */
-    background = MLV_load_image("./Assets/background_key.png");
-    MLV_resize_image_with_proportions(background, LX+250, LY+250);  /* Redimensionner l'image pour qu'elle couvre tout l'écran */
-    MLV_draw_image(background, 0, 0);
-    MLV_free_image(background);  /* Libérer l'image une fois qu'elle est dessinée */
+    /*background = MLV_load_image("./Assets/background_key.png");
+      MLV_resize_image_with_proportions(background, LX+250, LY+250);*/  /* Redimensionner l'image pour qu'elle couvre tout l'écran */
+    /* MLV_draw_image(background, 0, 0);
+    MLV_free_image(background);*/  /* Libérer l'image une fois qu'elle est dessinée */
 
     /* Chargement de la police */
     size_p = 40;
     police_timer = MLV_load_font("./Font/Crang.ttf", size_p);
 
     /* Affichage du chrono */
-    sprintf(chrono, "Temps : %02d:%02d", (int)(elapsed / 60), (int)elapsed % 60);
+    sprintf(chrono, "Temps : %02d:%02d", ((int)(elapsed / 60)) % 60, (int)elapsed % 60);
     MLV_get_size_of_adapted_text_box_with_font(chrono, police_timer, 10, &text_width, &text_height);
     MLV_draw_adapted_text_box_with_font(LX - text_width, 25, chrono, police_timer, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
     

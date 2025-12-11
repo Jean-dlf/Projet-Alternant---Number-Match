@@ -2,13 +2,14 @@
 #include <stdio.h>
 #include <string.h>
 #include "../Headers/types.h"
+#include "../Headers/score.h"
 #include "../Headers/initialisation.h"
 
 /*** Parti score et nom  ***/
 
 int load_save(char *name_f, parti *plyr, plateau **p){
     FILE *f = NULL;
-    int i, j, n, m, mode_tmp;
+    int i, j, n, m, mode_tmp, minutes, seconds;
 
     if((f = fopen(name_f, "r")) == NULL){
         fprintf(stderr, "Erreur lors de l'ouverture du fichier f\n");
@@ -33,11 +34,13 @@ int load_save(char *name_f, parti *plyr, plateau **p){
         return -1;
     }
 
-    if(fscanf(f, "%lf", &plyr->time_elapsed) != 1){
+    
+    if(fscanf(f, "%d:%d", &minutes, &seconds) != 2){
         fprintf(stderr, "Erreur lecture du timer\n");
         fclose(f);
         return -1;
     }
+    plyr->time_elapsed = convert_mmss_to_seconds(minutes, seconds);
               
     *p = initialisation_plateau(n, m);
     (*p)->mode = mode_tmp;
@@ -59,7 +62,7 @@ int load_save(char *name_f, parti *plyr, plateau **p){
 
 int save_game(char *name_f, parti *plyr, plateau *p){
     FILE *f;
-    int i, j;
+    int i, j, minutes, seconds;
 
     if((f = fopen(name_f, "w")) == NULL){
         fprintf(stderr, "Erreur lors de l'ouverture du fichier %s\n", name_f);
@@ -71,7 +74,8 @@ int save_game(char *name_f, parti *plyr, plateau *p){
 
     fprintf(f, "%d %d\n", p->n, p->m);
 
-    fprintf(f, "%.2f\n", plyr->time_elapsed);
+    convert_seconds_to_minutes(plyr->time_elapsed, &minutes, &seconds);
+    fprintf(f, "%02d:%02d\n", minutes, seconds);
 
     for(i = 0; i < p->n; i++){
         for(j = 0; j < p->m; j++){
