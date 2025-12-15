@@ -10,6 +10,7 @@
 #define MARGE_W 100
 #define TITLE_H 50
 
+/* Renvoie les tailles du plateau et adaptes la taille des cases en fonction (Ancienne version)*/
 void plateau_details(plateau *p, int *size, int *offset_x, int *offset_y, int *width, int *height){
     int size_w, size_h;
 

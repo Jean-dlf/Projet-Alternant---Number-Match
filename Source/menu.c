@@ -51,7 +51,7 @@ void menu_p(button t_button_menu[4]){
     int text_width, text_height, i, size_p, space;
     MLV_Font *police;
 
-    MLV_clear_window(MLV_rgba(122, 125, 125, 255));
+    MLV_clear_window(MLV_rgba(160, 160, 160, 255));
 
     /* -- Titre -- */
     size_p = TITLE_SIZE;
@@ -79,7 +79,7 @@ void menu_save(button t_button_save[5]){
     int text_width, text_height, i, size_p, space;
     MLV_Font *police;
         
-    MLV_clear_window(MLV_rgba(122, 125, 125, 255));
+    MLV_clear_window(MLV_rgba(160, 160, 160, 255));
 
     size_p = TITLE_SIZE;
     police = MLV_load_font("./Font/Crang.ttf", size_p);
@@ -108,7 +108,7 @@ void menu_choice_mode(button t_button_choice_mode[3]){
     int text_width, text_height, i, size_p, space;
     MLV_Font *police;
 
-    MLV_clear_window(MLV_rgba(122, 125, 125, 255));
+    MLV_clear_window(MLV_rgba(160, 160, 160, 255));
 
     /* -- Titre -- */
     size_p = TITLE_SIZE;
@@ -154,7 +154,7 @@ void menu_rules_classic(button *next){
     int text1_width, text1_height, text2_width, text2_height, text3_width, text3_height, title_width, title_height, size_p;
     MLV_Font *police;
 
-    MLV_clear_window(MLV_rgba(122, 125, 125, 255));
+    MLV_clear_window(MLV_rgba(160, 160, 160, 255));
 
     /* -- Titre -- */
     size_p = TITLE_SIZE;
@@ -200,7 +200,7 @@ void menu_rules_locksmith(button *next){
     int title_width, title_height, text1_width, text1_height, text2_width, text2_height, text3_width, text3_height, size_p;
     MLV_Font *police;
 
-    MLV_clear_window(MLV_rgba(122, 125, 125, 255));
+    MLV_clear_window(MLV_rgba(160, 160, 160, 255));
 
     size_p = TITLE_SIZE;
     police = MLV_load_font("./Font/Crang.ttf", size_p);
@@ -254,7 +254,7 @@ void menu_ask_difficulty(button t_button_level[6], int custom){
     int text_width, text_height, i, size_p, space, nb_buttons;
     MLV_Font *police;
 
-    MLV_clear_window(MLV_rgba(122, 125, 125, 255));
+    MLV_clear_window(MLV_rgba(160, 160, 160, 255));
 
     /* -- Titre -- */
     size_p = TITLE_SIZE;
@@ -312,7 +312,7 @@ void menu_score(){
         }
     }
 
-    MLV_clear_window(MLV_rgba(122, 125, 125, 255));
+    MLV_clear_window(MLV_rgba(160, 160, 160, 255));
     
     /* -- Titre -- */
     size_p = TITLE_SIZE;
@@ -378,7 +378,7 @@ void menu_pause(button t_bouton_pause[3]){
     int text_width, text_height, i, size_p, space;
     MLV_Font *police;
 
-    MLV_clear_window(MLV_rgba(122, 125, 125, 255));
+    MLV_clear_window(MLV_rgba(160, 160, 160, 255));
 
     /* -- Titre -- */
     size_p = TITLE_SIZE;
@@ -408,7 +408,7 @@ int crushing_save(){
     char *name_button_crush[2] = {"NO", "YES"};
     int size_p, text_width, text_height, mx, my, pressed, space;
 
-    MLV_clear_window(MLV_rgba(122, 125, 125, 255));
+    MLV_clear_window(MLV_rgba(160, 160, 160, 255));
 
     /* -- Titre -- */
     size_p = 100;
@@ -479,7 +479,7 @@ int pause_game(parti *plyr, plateau *p){
 
     in_pause = 1;
 
-    MLV_clear_window(MLV_rgba(122, 125, 125, 255));
+    MLV_clear_window(MLV_rgba(160, 160, 160, 255));
 
     while(in_pause){
         menu_pause(t_button_pause);
@@ -545,7 +545,7 @@ void ask_name(parti *p){
     char mess_err[64];
     char *tmp = NULL;
 
-    MLV_clear_window(MLV_rgba(122, 125, 125, 255));
+    MLV_clear_window(MLV_rgba(160, 160, 160, 255));
 
     size_p = 80;
     police = MLV_load_font("./Font/Crang.ttf", size_p);
@@ -554,7 +554,7 @@ void ask_name(parti *p){
     marge = 50;
     
     while(valide){
-        MLV_wait_input_box_with_font(marge, LY / 3, LX - (marge * 2), LY / 3, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_rgba(122, 125, 125, 255), "Enter your name :", &tmp, police);
+        MLV_wait_input_box_with_font(marge, LY / 3, LX - (marge * 2), LY / 3, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_rgba(160, 160, 160, 255), "Enter your name :", &tmp, police);
 
         if(strlen(tmp) > 10 || strlen(tmp) == 0){
             sprintf(mess_err, "You cannot have a name longer than 10 characters or 0 character");
@@ -577,7 +577,7 @@ void recap_game(parti player){
     int text_width, text_height, size_p, minutes, seconds;
     MLV_Font *police;
 
-    MLV_clear_window(MLV_rgba(122, 125, 125, 255));
+    MLV_clear_window(MLV_rgba(160, 160, 160, 255));
 
     /* -- Titre -- */
     size_p = TITLE_SIZE;
@@ -610,7 +610,7 @@ void menu_customised_dimensions(plateau *p){
     char mess_err[50];
     char *tmp = NULL;
 
-    MLV_clear_window(MLV_rgba(122, 125, 125, 255));
+    MLV_clear_window(MLV_rgba(160, 160, 160, 255));
 
     size_p = 50;
     police = MLV_load_font("./Font/Crang.ttf", size_p);
@@ -628,14 +628,14 @@ void menu_customised_dimensions(plateau *p){
     /* -- Demande pour la longueur -- */
     tmp = NULL;
     while(valide){
-        MLV_wait_input_box_with_font(marge, LY / 3, LX - (marge * 2), LY / 3, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_rgba(122, 125, 125, 255), "Enter the length of the game board --- min 3 | max 11 ->", &tmp, police);
+        MLV_wait_input_box_with_font(marge, LY / 3, LX - (marge * 2), LY / 3, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_rgba(160, 160, 160, 255), "Enter the length of the game board --- min 3 | max 10 ->", &tmp, police);
         
         value = atoi(tmp);
         free(tmp);
         tmp = NULL;
         
-        if(value < 3 || value > 11){
-            sprintf(mess_err, "You must enter a number between 3 and 11");
+        if(value < 3 || value > 10){
+            sprintf(mess_err, "You must enter a number between 3 and 10");
             display_text_box(mess_err);
         } else {
             p->n = value;
@@ -647,7 +647,7 @@ void menu_customised_dimensions(plateau *p){
 
     MLV_free_font(police);
     
-    MLV_clear_window(MLV_rgba(122, 125, 125, 255));
+    MLV_clear_window(MLV_rgba(160, 160, 160, 255));
 
     size_p = 50;
     police = MLV_load_font("./Font/Crang.ttf", size_p);
@@ -661,7 +661,7 @@ void menu_customised_dimensions(plateau *p){
     
     /* -- Demande pour la hauteur -- */
     while(valide){
-        MLV_wait_input_box_with_font(marge, LY / 3, LX - (marge * 2), LY / 3, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_rgba(122, 125, 125, 255), "Enter the height of the game board --- min 3 | max 14 ->", &tmp, police);
+        MLV_wait_input_box_with_font(marge, LY / 3, LX - (marge * 2), LY / 3, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_rgba(160, 160, 160, 255), "Enter the height of the game board --- min 3 | max 14 ->", &tmp, police);
         
         value = atoi(tmp);
         free(tmp);

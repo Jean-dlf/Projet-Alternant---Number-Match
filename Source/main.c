@@ -9,9 +9,9 @@
 #include "../Headers/game.h"
 #include "../Headers/menu_management.h"
 
-/* Le main est vide, il contient simplement les valeurs dont on a besoin, ici le nombre de lignes et de colonnes du plateau et le plateau */
 int main(){
 
+    /* Affichage de la fenêtre */
     MLV_create_full_screen_window("NUMBER MATCH", "NUMBER MATCH", LX, LY);
 
     srand(time(NULL));
@@ -19,6 +19,7 @@ int main(){
     /* On appelle la fonction qui fait fonctionner le jeu */
     management();
 
+    /* Libération de la fenêtre */
     MLV_free_window();
 
     exit(EXIT_SUCCESS);

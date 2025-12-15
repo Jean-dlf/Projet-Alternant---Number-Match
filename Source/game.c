@@ -22,14 +22,13 @@ void game_term(plateau *p, int n, int m, int save, parti *player_s){
     loose_i = 0;
 
     if(save){
-        /*printf("Entrez votre nom de player : ");
+        printf("Entrez votre nom de player : ");
         if(scanf("%79s", name_player) != 1){
             fprintf(stderr, "Erreur lecture nom player\n");
             return ;
         }
 
         viderBuffer();
-        player = initialiser_score(name_player);*/
 
         p = initialisation_plateau(n, m);
         if(p == NULL){
@@ -189,7 +188,7 @@ int game_graphic(plateau *p, int n, int m, parti *player_s, int mode){
     start_time = time(NULL) - player->time_elapsed; /* Début du chronomètre */
     elapsed = player->time_elapsed;
 
-    display_plateau_mlv(p, t_bouton_game, elapsed);
+    display_plateau_mlv(p, t_bouton_game, elapsed, player);
     MLV_actualise_window();
     
     clue_active = 0;
@@ -319,7 +318,7 @@ int game_graphic(plateau *p, int n, int m, parti *player_s, int mode){
             clue_active = bonus_clue(p);
             if(clue_active){
                 nb_ind_cpl--;
-                display_plateau_mlv(p, t_bouton_game, elapsed);
+                display_plateau_mlv(p, t_bouton_game, elapsed, player);
                 MLV_actualise_window();
             }
         
@@ -332,7 +331,6 @@ int game_graphic(plateau *p, int n, int m, parti *player_s, int mode){
                 if(free_p){
                     free_plateau(p);
                 }
-                printf("Partie quittée depuis le menu pause\n");
                 return -1;
             }
         } 
@@ -341,7 +339,7 @@ int game_graphic(plateau *p, int n, int m, parti *player_s, int mode){
         player->time_elapsed = elapsed;
         player->bonus_add_lines = nb_ajt_lig;
         player->bonus_clue = nb_ind_cpl;
-        display_plateau_mlv(p, t_bouton_game, elapsed);
+        display_plateau_mlv(p, t_bouton_game, elapsed, player);
         MLV_actualise_window();
 
         /* ----- VERIFICATION DE LA DEFAITE ----- */

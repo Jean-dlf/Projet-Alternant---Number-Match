@@ -3,6 +3,7 @@
 #include <time.h>
 #include "../Headers/types.h"
 
+/* Affiche le plateau de jeu terminal */
 void display_plateau(plateau *p){
     int i, j;
 
@@ -20,6 +21,7 @@ void display_plateau(plateau *p){
     }
 }
 
+/* Libère le plateau de jeu */
 void free_plateau(plateau *p){
     int i;
 

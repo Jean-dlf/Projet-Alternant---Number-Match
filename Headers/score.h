@@ -11,6 +11,8 @@ int save_score(char *name_f, tparti t_player, int nb_score);
 
 int collect_score(char *name_f, tparti t_player);
 
+int get_best_score(int difficulty);
+
 int update_high_scores(parti player);
 
 #endif

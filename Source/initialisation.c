@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include "../Headers/types.h"
 
-/*** NOTE IMPORTANTE ***/
-/* Pour les malloc faut toujours vérifier si l'allocation est NULL */
 
 /* Initialisation du plateau */
 plateau *initialisation_plateau(int n, int m){
@@ -16,14 +14,15 @@ plateau *initialisation_plateau(int n, int m){
         return NULL;
     }
 
-    p->n = n; /* On donne le n en paramètre au n du plateau */
-    p->m = m; /* On donne le m en paramètre au m du plateau */
+    /* Définition de p->n et p->m */
+    p->n = n;
+    p->m = m;
 
     /* Permet d'allouer le plateau de jeu */
     if((p->tab = (cases**) malloc ( n * sizeof(cases *))) == NULL){
         fprintf(stderr, "Erreur lors de l'allocation de la mémoire des lignes du plateau de jeu\n");
-        free(p); /* Si l'allocation a échoué alors on libère l'allocation du type plateau */
-        p = NULL; /* Et on le redéfinit à NULL */
+        free(p);
+        p = NULL;
         return NULL;
     }
 
@@ -31,27 +30,31 @@ plateau *initialisation_plateau(int n, int m){
     for(i = 0 ; i < n ; i++){
         if((p->tab[i] = (cases *) calloc ( m, sizeof(cases))) == NULL){ /* Ici on fait calloc au lieu de malloc, ça sert à allouer exactement comme malloc juste ça initialise toutes les cases à 0 directement */
             fprintf(stderr, "Erreur lors de l'allocation de la mémoire des colonnes du plateau de jeu\n");
-            /* Si il y a une erreur lors de l'allocation d'une case alors on part de là où ça a bugué puis on revient au début tout en libérant l'espace alloué précédemment */
-            /* C'est important en cas d'échec de libérer l'espace allouer */
+
+            /* Libération cases allouées précédemment */
             for(i = i - 1; i >= 0; i--){
-                free(p->tab[i]); /* C'est la fonction pour libérer l'espace allouer */
+                free(p->tab[i]);
                 p->tab[i] = NULL;
             }
-            /* Note important faut libérer tout dans le bon sens, donc d'abord chaque cases p->tab[i] ensuite le tableau p->tab puis le plateau p */
+
+            /* Libération */
             free(p->tab);
             free(p);
             return NULL;
         }
 
-        /* Si tout a fonctionné alors on initialise chaque cases avec les coordonnées actuelles de i et j et avec une value de base à 0 */
+        /* Iitialisatio des cases */
         for(j = 0; j < m; j++){
             p->tab[i][j].x = i;
             p->tab[i][j].y = j;
             p->tab[i][j].value = 0;
         }
     }
+    
+    /* Initialisation score et mode */
     p->score_actuel = 0;
     p->mode = 0;
+
     return p;
 }
 
@@ -91,19 +94,23 @@ plateau *random_initialisation(plateau *p){
 l_cases *initialisation_l_cases(cases *c1, cases *c2){
     l_cases *l_c = NULL;
 
+    /* Initialisatio de la liste de cases */
     if((l_c = (l_cases*) malloc (sizeof(l_cases))) == NULL){
         fprintf(stderr, "Erreur allocation de la structure l_cases\n");
         return NULL;
     };
 
+    /* Défiition de sa longueur max à 2 */
     l_c->n = 2;
 
+    /* Allocation de la taille */
     if((l_c->c = (cases*) malloc (2 * sizeof(cases))) == NULL){
         fprintf(stderr, "Erreur allocation du tableau de cases\n");
         free(l_c);
         return NULL;
     }
 
+    /* Initialisation des cases dans l_cases */
     l_c->c[0] = *c1;
     l_c->c[1] = *c2;
 

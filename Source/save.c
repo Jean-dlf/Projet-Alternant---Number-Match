@@ -5,47 +5,53 @@
 #include "../Headers/score.h"
 #include "../Headers/initialisation.h"
 
-/*** Parti score et nom  ***/
-
+/* Lecture d'un fichier de sauvegarde */
 int load_save(char *name_f, parti *plyr, plateau **p){
     FILE *f = NULL;
     int i, j, n, m, mode_tmp, minutes, seconds;
 
+    /* Ouverture du fichier */
     if((f = fopen(name_f, "r")) == NULL){
         fprintf(stderr, "Erreur lors de l'ouverture du fichier f\n");
         return -1;
     }
 
+    /* Lecture du nom du joueur */
     if(fscanf(f, "%10s", plyr->name_player) != 1){
         fprintf(stderr, "Erreur lecture du nom du joueur\n");
         fclose(f);
         return -1;
     }
 
+    /* Lecture information joueur */
     if(fscanf(f, "%d %d %d %d %d", &plyr->score, &plyr->bonus_add_lines, &plyr->bonus_clue, &mode_tmp, &plyr->difficulty) != 5){
         fprintf(stderr, "Erreur lecture informations du joueur\n");
         fclose(f);
         return -1;
     }
 
+    /* Lecture dimension plateau */
     if(fscanf(f, "%d %d", &n ,&m) != 2){
         fprintf(stderr, "Erreur lecture dimensions du plateau\n");
         fclose(f);
         return -1;
     }
 
-    
+    /* Lecture timer */
     if(fscanf(f, "%d:%d", &minutes, &seconds) != 2){
         fprintf(stderr, "Erreur lecture du timer\n");
         fclose(f);
         return -1;
     }
+    /* Convertion en second */
     plyr->time_elapsed = convert_mmss_to_seconds(minutes, seconds);
               
+    /* Initialisation */
     *p = initialisation_plateau(n, m);
     (*p)->mode = mode_tmp;
     (*p)->score_actuel = plyr->score;
     
+    /* Lecture case du plateau */
     for(i = 0; i < n; i++){
         for(j = 0; j < m; j++){
             if(fscanf(f, "%d", &(*p)->tab[i][j].value) != 1){
@@ -60,23 +66,33 @@ int load_save(char *name_f, parti *plyr, plateau **p){
     return 1;
 }
 
+/* Ecriture dans un fichier de sauvegarde */
 int save_game(char *name_f, parti *plyr, plateau *p){
     FILE *f;
     int i, j, minutes, seconds;
 
+    /* Ouverture du fichier */
     if((f = fopen(name_f, "w")) == NULL){
         fprintf(stderr, "Erreur lors de l'ouverture du fichier %s\n", name_f);
         return -1;
     }
 
+    /* Ecriture nom joueur */
     fprintf(f, "%s\n", plyr->name_player);
+
+    /* Ecriture données du joueur */
     fprintf(f, "%d %d %d %d %d\n", plyr->score, plyr->bonus_add_lines, plyr->bonus_clue, p->mode, plyr->difficulty);
 
+    /* Ecriture dimensions plateau */
     fprintf(f, "%d %d\n", p->n, p->m);
 
+    /* Convertion en minute */
     convert_seconds_to_minutes(plyr->time_elapsed, &minutes, &seconds);
+
+    /* Ecriture du timer en minute:secondes */
     fprintf(f, "%02d:%02d\n", minutes, seconds);
 
+    /* Ecriture cases du plateau */
     for(i = 0; i < p->n; i++){
         for(j = 0; j < p->m; j++){
             fprintf(f, "%d ", p->tab[i][j].value);
